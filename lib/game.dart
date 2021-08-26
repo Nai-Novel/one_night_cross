@@ -28,6 +28,7 @@ late ScriptRunner _scriptRunner;
 HashMap<String, ui.Image> _imageCache= HashMap<String, ui.Image>();
 
 void _completeScriptCommand(ScriptCommandInfo commandInfo, [bool isCountForExecution= true]){
+  commandInfo.complete();
   _scriptRunner.completeCommand(commandInfo, isCountForExecution);
 }
 
@@ -134,6 +135,9 @@ class _GameContainerState extends State<GameContainer>
   }
 
   void _processCommand(ScriptCommandInfo commandInfo,[bool checkDelay= true]) {
+    if(commandInfo.containKey(ScriptCommand.COMMON_COMMAND_CONTINUE)){
+      _completeScriptCommand(commandInfo);
+    }
     if (commandInfo.containKey(ScriptCommand.COMMON_DELAY) && checkDelay) {
       //Delay before process
       AnimationController _animationController= AnimationController(vsync: this);

@@ -465,7 +465,7 @@ class ScriptRunner {
         && commandInfo.containKey(ScriptCommand.CHOICE_END)){
       _isNeedToPause= true;
     }
-    if(commandInfo.isContinueExecutionCommand){
+    if(commandInfo.containKey(ScriptCommand.COMMON_COMMAND_CONTINUE)){
       _continueExecutionCount++;
       _isNeedToPause= false;
     }
@@ -489,7 +489,7 @@ class ScriptRunner {
       _currentScript!.line = i;
       AlreadyReadHelper.read(_currentScript!.name, i);
       String currentLineInCurrentScript = _currentScript!.scriptLines[i].trim();
-      print("qqqq1: $currentLineInCurrentScript");
+      print("qqqq10: $currentLineInCurrentScript");
       if (currentLineInCurrentScript.length > 0) {
         if (currentLineInCurrentScript.trimLeft().startsWith(ScriptCommand.COMMON_COMMEND)) {
           continue;
@@ -590,7 +590,7 @@ class ScriptRunner {
         if (currentLine.length > 0){
           if (commandInfo.header== ScriptCommand.LOOP_START){
             if(commandInfo.containKey(ScriptCommand.LOOP_TIME)){
-              _insideInfinityLoopCount = int.tryParse(commandInfo.valueOf(ScriptCommand.LOOP_TIME)!)!- 1;
+              _insideInfinityLoopCount = int.parse(commandInfo.valueOf(ScriptCommand.LOOP_TIME)!)- 1;
               _insideInfinityStartLoopLine= i+ 1;
             }
             continue;
@@ -642,22 +642,23 @@ class ScriptRunner {
     }
 
     if(commandInfo.buildNextCommand()){
-      if(commandInfo.isContinueExecutionCommand){
-        _continueExecutionCount++;
-      }
       int handleSingleCommandResult= _handleSingleCommand(commandInfo);
       if(handleSingleCommandResult== -1){
-        if(isCountForExecution && !commandInfo.isFake) {
+        if(isCountForExecution && commandInfo.isCompleted()) {
           _executionCount--;
         }
         return;
       }else if(handleSingleCommandResult== 0){
 
       }else if(handleSingleCommandResult== 1){
+        commandInfo.increaseCountdownComplete();
         _commandPreparedCallBack(commandInfo);
       }
     }else{
-      if(commandInfo.isFake){return;}
+      if(!commandInfo.isCompleted()){
+        commandInfo._countdownToComplete--;
+        return;
+      }
       if(commandInfo.infinityExecutionName!= null){
         _infinityExecutionCount--;
         if(_infinityExecutionCount< 0){
@@ -671,9 +672,8 @@ class ScriptRunner {
       if(isCountForExecution) {
         _executionCount--;
       }
-      if(commandInfo.isContinueExecutionCommand){
+      if(commandInfo.containKey(ScriptCommand.COMMON_COMMAND_CONTINUE)){
         _continueExecutionCount--;
-        return;
       }
 
       if (commandInfo.header== ScriptCommand.LABEL_HEADER
@@ -1192,9 +1192,18 @@ class ScriptCommandInfo {
   String? _nextCommand;
   late String _header;
   late HashMap<String, String> _listCommandParam;
-  late bool _isContinueExecutionCommand;
   String? _infinityExecutionName;
-  bool isFake= false;
+  int _countdownToComplete= 1;
+
+  void increaseCountdownComplete(){
+    _countdownToComplete++;
+  }
+
+  bool isCompleted(){
+    return _countdownToComplete== 0;
+  }
+
+  void complete(){_countdownToComplete--;}
 
   ScriptCommandInfo(String commandLine,[String? infinityExecutionName]) {
     buildCommandInfo(commandLine);
@@ -1231,7 +1240,6 @@ class ScriptCommandInfo {
             paramKey.trim().toLowerCase(), () => paramValue.trim());
       }
     }
-    _isContinueExecutionCommand= _listCommandParam.containsKey(ScriptCommand.COMMON_COMMAND_CONTINUE);
   }
 
   bool buildNextCommand(){ //If this command has next, build command in tail
@@ -1268,7 +1276,6 @@ class ScriptCommandInfo {
   }
 
   String get header => _header;
-  bool get isContinueExecutionCommand => _isContinueExecutionCommand;
   String? get infinityExecutionName => _infinityExecutionName;
 
   @override

@@ -412,9 +412,9 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
       }else{
         _layoutWidget= Column(
           children: [
-            const Spacer(),
+            const Spacer(flex: 8,),
             Expanded(
-              flex: 7,
+              flex: 3,
               child: Row(
                 children: [
                   const Spacer(),
@@ -431,7 +431,7 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
                 ],
               ),
             ),
-            const Spacer(flex: 2,),
+            const Spacer(),
           ],
         );
       }
@@ -510,7 +510,7 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
   void userChoose(int index) {
     if(_listCommand[index].containKey(ScriptCommand.CHOICE_FREEZE)){
       ScriptCommandInfo fakeCommand= ScriptCommandInfo(_listCommand[index].nextCommand);
-      fakeCommand.isFake= true;
+      fakeCommand.increaseCountdownComplete();
       widget.onFreezeChoice(fakeCommand);
       return;
     }
