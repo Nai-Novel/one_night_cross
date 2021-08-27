@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'audio_helper.dart';
 import 'com_cons.dart';
 import 'game.dart';
@@ -364,6 +365,7 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
   bool _userChosen= false;
   String _layout= "";
   late Widget _layoutWidget;
+  ScrollController _scrollController = new ScrollController();
 
   void _addCommand(ScriptCommandInfo commandInfo) {
     _listCommand.add(commandInfo);
@@ -398,6 +400,7 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
                       flex: 8,
                       child: Center(
                         child: ListView(
+                          controller: _scrollController,
                           children: choiceList,
                         ),
                       ),
@@ -422,6 +425,7 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
                     flex: 8,
                     child: Center(
                       child: ListView(
+                        controller: _scrollController,
                         shrinkWrap: true,
                         children: choiceList,
                       ),
@@ -542,6 +546,15 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
 
   @override
   Widget build(BuildContext context) {
+    if(_isDisplay){
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        _scrollController.animateTo(0,
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeOut,
+        );
+      });
+    }
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 600),
       child: _isDisplay ? Material(
