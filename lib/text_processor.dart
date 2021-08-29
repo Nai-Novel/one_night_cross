@@ -24,6 +24,7 @@ class TextProcessor{
   static const String STYLE_TAG_UNDERLINE = "u";
   static const String STYLE_TAG_STRIKE_THROUGH = "s";
 
+  static const String FULL_TAG_LINE_BREAK = "<br>";
   static const String REPLACE_LINE_BREAK = "br";
   static const String REPLACE_SEMICOLON = ".,";
   static const String REPLACE_EQUAL = "-_";
@@ -102,6 +103,7 @@ class TextProcessor{
           String textInside= tailText.substring(0, startTagIndex);
           if(tapActionString== CLICKABLE_ACTION_COPY_TO_CLIPBOARD){
             tapAction= TapGestureRecognizer()..onTap= (){
+              //TODO: Refactor to onCliCk(string command, string data)
               Clipboard.setData(ClipboardData(text: textInside));
             };
             clickStyle= textStyle.copyWith(
@@ -202,7 +204,7 @@ class TextProcessor{
 class Language{
   static const String NONE = "__";
   static const String JAPANESE = "jp";
-  static const String JP_KANJI_WITH_HIRAGANA = "jp-kana";
+  static const String JP_KANJI_WITH_HIRAGANA = "kana";
   static const String VIETNAMESE = "vi";
   static const String ENGLISH = "en";
 }

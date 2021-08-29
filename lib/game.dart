@@ -2269,6 +2269,8 @@ class _TextContainerState extends State<TextContainer>
   String _lastMainText = "";
   String _currentSubText = "";
   String _lastSubText = "";
+  String _currentKanaText = "";
+  String _lastKanaText = "";
   List<TextSpan> _displayMainTextSpan = <TextSpan>[];
 
   double _lastDisplayWidth = 0;
@@ -2540,7 +2542,6 @@ class _TextContainerState extends State<TextContainer>
                             );
                           }
                           if(displayIndex== 3){
-                            String exampleText= "救う：<click=copy>すくう</click><br>留学：<click=copy>りゅうがく</click><br>決意：<click=copy>けつい</click><br>異なる：<click=copy>ことなる</click><br>目的：<click=copy>もくてき</click>";
                             return SingleChildScrollView(
                               scrollDirection: Axis.vertical,
                               child: Center(
@@ -2548,7 +2549,7 @@ class _TextContainerState extends State<TextContainer>
                                   //Include clickable text so make it center to prevent being crushed by Menu
                                   textAlign: TextAlign.start,
                                   text: TextSpan(
-                                    children: TextProcessor.buildSpanFromString(exampleText),
+                                    children: TextProcessor.buildSpanFromString(_currentKanaText),
                                   ),
                                 ),
                               ),
@@ -2742,9 +2743,6 @@ class _TextContainerState extends State<TextContainer>
       _characterBaseName="";
     }
 
-    String lineBreak= TextProcessor.START_TAG_STRING
-        + TextProcessor.REPLACE_LINE_BREAK
-        + TextProcessor.END_TAG_STRING;
     String? newMainString= commandInfo.valueOf(UserConfig.get(UserConfig.GAME_MAIN_LANGUAGE));
     if(newMainString== null){newMainString= "";}
     if(_lastMainText.length> 0){
@@ -2767,9 +2765,19 @@ class _TextContainerState extends State<TextContainer>
       _currentSubText= newSubString;
     }
 
+    //_currentKanaText
+    String? newKanaString= commandInfo.valueOf(Language.JP_KANJI_WITH_HIRAGANA);
+    if(newKanaString== null){newKanaString= "";}
+    if(_lastKanaText.length> 0){
+      _currentKanaText= _lastKanaText + newKanaString;
+    }else{
+      _currentKanaText= newKanaString;
+    }
+
     if(UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE)){
       if(UserConfig.getBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE)){
-        _currentCombineText= _currentMainText + lineBreak + _currentSubText;
+        _currentCombineText= _currentMainText
+            + TextProcessor.FULL_TAG_LINE_BREAK + _currentSubText;
       }else{
         _currentCombineText= _currentMainText;
       }
