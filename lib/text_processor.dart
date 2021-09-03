@@ -210,6 +210,9 @@ class Language{
 }
 
 class GameText{
+  static String GAME_RESOURCE_SCREEN_CURRENT_STATE_READY= "";
+  static String GAME_RESOURCE_SCREEN_CURRENT_STATE_NOT_READY= "";
+
   static String SPLASH_CHOOSE_STORAGE_LABEL= "";
   static String SPLASH_STORAGE_LABEL_CHOSEN= "";
   static String SPLASH_CHOOSE_STORAGE_EXPLAIN= "";
@@ -299,6 +302,9 @@ class GameText{
 
   static void loadMenuByLanguage(String lang){
     if(lang== Language.VIETNAMESE){
+      GAME_RESOURCE_SCREEN_CURRENT_STATE_READY = "Đã sẵn sàng!";
+      GAME_RESOURCE_SCREEN_CURRENT_STATE_NOT_READY = "Chưa đầy đủ!";
+
       SPLASH_CHOOSE_STORAGE_LABEL = "Chọn vùng nhớ: ";
       SPLASH_STORAGE_LABEL_CHOSEN = "Vùng nhớ: ";
       SPLASH_CHOOSE_STORAGE_INTERNAL_STORAGE= "Bộ nhớ trong";
@@ -357,7 +363,11 @@ class GameText{
       CONFIG_TAB_TEXT_SAMPLE_TEXT1 = "Tên nhân vật<br>Một đoạn văn bản rất dài dùng để cho bạn thấy với các tuỳ chỉnh hiện tại, văn bản được hiển thị như thế nào.";
       CONFIG_TAB_TEXT_SAMPLE_TEXT2 = "Vậy nên khi đọc bạn sẽ thấy vô cùng chán nản, mệt mỏi và cuối cùng là... hối tiếc vì đã đọc đống chữ hiển thị thử nghiệm vớ vẩn này.";
       CONFIG_TAB_CHARACTER = "Nhân vật";
-    }else if(lang== Language.ENGLISH){
+    }
+    else if(lang== Language.ENGLISH){
+      GAME_RESOURCE_SCREEN_CURRENT_STATE_READY = "All ready!";
+      GAME_RESOURCE_SCREEN_CURRENT_STATE_NOT_READY = "Incomplete!";
+
       SPLASH_CHOOSE_STORAGE_LABEL = "Choose storage: ";
       SPLASH_STORAGE_LABEL_CHOSEN = "Storage: ";
       SPLASH_CHOOSE_STORAGE_INTERNAL_STORAGE= "Internal storage";
@@ -414,7 +424,11 @@ class GameText{
       CONFIG_TAB_TEXT_AUTO_WAIT_TIME = "Auto mode wait time";
       CONFIG_TAB_TEXT_SAMPLE_DISPLAY = "Sample text";
       CONFIG_TAB_CHARACTER = "Character";
-    }else if(lang== Language.JAPANESE){
+    }
+    else if(lang== Language.JAPANESE){
+      GAME_RESOURCE_SCREEN_CURRENT_STATE_READY = "準備完了";
+      GAME_RESOURCE_SCREEN_CURRENT_STATE_NOT_READY = "未完成";
+
       SPLASH_CHOOSE_STORAGE_LABEL = "ストレージ選び：";
       SPLASH_STORAGE_LABEL_CHOSEN = "ストレージ：";
       SPLASH_CHOOSE_STORAGE_INTERNAL_STORAGE= "内部ストレージ";

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'game.dart';
+import 'game_resource_screen.dart';
 import 'script_runner.dart';
 import 'text_processor.dart';
 import 'com_cons.dart';
@@ -401,7 +402,10 @@ class _InitWidgetState extends State<InitWidget> {
                                 _btnSpacing,
                                 GestureDetector(
                                   onTap: (){
-                                    HttpProcessor.openLinkByName("resource_link_manual");
+                                    //HttpProcessor.openLinkByName("resource_link_manual");
+                                    Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) => GameResource()),
+                                    );
                                   },
                                   child: Container(
                                     height: _btnHeight,

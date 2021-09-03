@@ -687,8 +687,8 @@ class AlreadyReadHelper{
 }
 
 class AssetConstant {
-  //static const String ROOT_DIR = "assets/.nomedia/";
-  static const String GAME_ROOT_DIR = "assets/.nomedia/game/";
+  static const String ROOT_DIR = "assets/.nomedia/";
+  static const String GAME_ROOT_DIR = ROOT_DIR+ "game/";
   static const String SCRIPT_DIR = GAME_ROOT_DIR + "scripts/";
   static const String SPECTRUM_DIR = GAME_ROOT_DIR + "spectrum/";
   static const String IMAGE_DIR = GAME_ROOT_DIR + "image/";
@@ -718,20 +718,19 @@ class AssetConstant {
 
   static const String CHECK_HASH_FILE_PATH = IMAGE_DIR+ "hoshi";
 
-  static SplayTreeMap<String, String>? _magicPath;
+  static SplayTreeMap<String, String> _magicPath= SplayTreeMap<String, String>();
 
   static Future<void> initAssetsPath(){
     Completer<void> completer = new Completer<void>();
-    if(_magicPath!= null && _magicPath!.length> 0){
-      completer.complete();
+    if(_magicPath.isNotEmpty){
+      completer.complete(null);
     }else{
-      _magicPath = SplayTreeMap<String, String>();
       rootBundle.loadString(APP_TEXT_DIR+ "magic_path.txt").then((fileString) {
         for(String aLine in fileString.split("\r\n")){
           if(aLine.length== 0){continue;}
           int separatorIndex= aLine.indexOf("|=|");
           if(separatorIndex< 0){continue;}
-          _magicPath!.putIfAbsent(aLine.substring(0, separatorIndex), () => aLine.substring(separatorIndex+ 3));
+          _magicPath.putIfAbsent(aLine.substring(0, separatorIndex), () => aLine.substring(separatorIndex+ 3));
         }
         completer.complete(null);
       });
@@ -740,13 +739,13 @@ class AssetConstant {
   }
 
   static String getTruePath(String abstractPath) {
-    if (!_magicPath!.containsKey(abstractPath)) {
+    if (!_magicPath.containsKey(abstractPath)) {
       return "${UserConfig.get(UserConfig.GAME_ASSETS_FOLDER)}/$abstractPath";
     }
-    return "${UserConfig.get(UserConfig.GAME_ASSETS_FOLDER)}/${_magicPath![abstractPath]}";
+    return "${UserConfig.get(UserConfig.GAME_ASSETS_FOLDER)}/${_magicPath[abstractPath]}";
   }
 
   static bool containPath(String assetPath){
-    return _magicPath!.containsKey(assetPath);
+    return _magicPath.containsKey(assetPath);
   }
 }
