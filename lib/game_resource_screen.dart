@@ -18,7 +18,7 @@ class GameResource extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: GameResourceProgress(),);
+    return GameResourceProgress();
   }
 }
 
@@ -30,10 +30,13 @@ class GRText{
 
   static const String STORAGE_HEADER = "STORAGE_HEADER";
   static const String STORAGE_NEED_CHOOSE = "STORAGE_NEED_CHOOSE";
+  static const String STORAGE_PLEASE_CHOOSE = "STORAGE_PLEASE_CHOOSE";
   static const String STORAGE_CHOSEN = "STORAGE_CHOSEN";
   static const String STORAGE_INSIDE = "STORAGE_INSIDE";
   static const String STORAGE_OUTSIDE = "STORAGE_OUTSIDE";
 
+  static const String DOWNLOAD_HEADER = "DOWNLOAD_HEADER";
+  static const String DOWNLOAD_COMMAND_START = "DOWNLOAD_COMMAND_START";
   static const String DOWNLOAD_COMMAND_WAITING = "DOWNLOAD_PREPARING";
   static const String DOWNLOAD_DATA_REQUEST_FAILED = "DOWNLOAD_DATA_REQUEST_FAILED";
   static const String DOWNLOAD_DATA_REQUESTING = "DOWNLOAD_DATA_REQUESTING";
@@ -57,10 +60,13 @@ class GRText{
         case STATE_NOT_READY: return "Chưa đầy đủ!";
 
         case STORAGE_HEADER: return "Vùng nhớ: ";
-        case STORAGE_NEED_CHOOSE: return "Chưa chọn";
+        case STORAGE_NEED_CHOOSE: return "Chưa chọn(Bấm để chọn)";
+        case STORAGE_PLEASE_CHOOSE: return "Hãy lựa chọn vùng nhớ";
         case STORAGE_INSIDE: return "Bộ nhớ trong";
         case STORAGE_OUTSIDE: return "Bộ nhớ ngoài";
 
+        case DOWNLOAD_HEADER: return "Tải xuống: ";
+        case DOWNLOAD_COMMAND_START: return "Bắt đầu tải";
         case DOWNLOAD_COMMAND_WAITING: return "Đang chờ lệnh...";
         case DOWNLOAD_DATA_REQUEST_FAILED: return "Không tìm thấy dữ liệu tải xuống!";
         case DOWNLOAD_DATA_REQUESTING: return "Đang kết nối...";
@@ -77,10 +83,13 @@ class GRText{
         case STATE_NOT_READY: return "未完成";
 
         case STORAGE_HEADER: return "ストレージ：";
-        case STORAGE_NEED_CHOOSE: return "選んでください";
+        case STORAGE_NEED_CHOOSE: return "選んでください（クリック）";
+        case STORAGE_PLEASE_CHOOSE: return "ストレージを選んでください";
         case STORAGE_INSIDE: return "内部メモリ";
         case STORAGE_OUTSIDE: return "外部メモリ";
 
+        case DOWNLOAD_HEADER: return "ダウンロード";
+        case DOWNLOAD_COMMAND_START: return "実行";
         case DOWNLOAD_COMMAND_WAITING: return "命令待機…";
         case DOWNLOAD_DATA_REQUEST_FAILED: return "ダウンロードリソース見つけません";
         case DOWNLOAD_DATA_REQUESTING: return "ネット接続中…";
@@ -97,10 +106,11 @@ class GRText{
 class GameResourceProgress extends StatefulWidget {
   static const Color PROGRESS_NOT_COMPLETE= Colors.orangeAccent;
   static const Color PROGRESS_COMPLETE= Colors.greenAccent;
-  const GameResourceProgress({Key? key}) : super(key: key);
+  GameResourceProgress({Key? key}) : super(key: key);
+  final _GameResourceProgressState _state= _GameResourceProgressState();
 
   @override
-  _GameResourceProgressState createState() => _GameResourceProgressState();
+  _GameResourceProgressState createState() => _state;
 }
 
 class _GameResourceProgressState extends State<GameResourceProgress> {
@@ -108,8 +118,9 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
   ValueNotifier<String> _progressNotifier= ValueNotifier<String>(
       GRText.get(GRText.DOWNLOAD_COMMAND_WAITING));
   List<GRDownloadInfo>? _listDownloadInfo;
+  bool _isLive= true;
 
-  _checkState([bool refresh= true]){
+  _checkResource([bool refresh= true]){
     if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length> 0){
       _storageState= GRText.STORAGE_CHOSEN;
     }else{
@@ -139,19 +150,47 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
 
   @override
   void initState() {
-    _checkState(false);
+    _checkResource(false);
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    _isLive= false;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext rootContext) {
+    BoxDecoration boxDecoration= BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: Colors.black),
+      borderRadius: BorderRadius.circular(3),
+      gradient: LinearGradient(
+        colors: [
+          Color(0x889C37EB),
+          Colors.white,
+        ],
+        stops: [0.1, 1],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 5,
+          blurRadius: 7,
+          offset: Offset(0, 3), // changes position of shadow
+        ),
+      ],
+    );
+    String readyText= GRText.get(GRText.STATE_HEADER)
+        + GRText.get(GRText.STATE_READY);
     return Scaffold(
       appBar: AppBar(title: ValueListenableBuilder(
           valueListenable: _progressNotifier,
           builder: (context, value, child) {
             String progress= value as String;
-            String readyText= GRText.get(GRText.STATE_HEADER)
-                + GRText.get(GRText.STATE_READY);
             //TODO: change color for state
             if(progress!= readyText){
               return Text(GRText.get(GRText.STATE_HEADER)
@@ -159,37 +198,93 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
             }
             return Text(readyText);
           },),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(rootContext),
+        ),
+        backgroundColor: _progressNotifier.value!= readyText ? Colors.grey : null,
       ),
-      body: Column(
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.red),
-              borderRadius: BorderRadius.circular(3),
-            ),
-            child: Container(
-              child: Column(
-                children: [
-                  Text(GRText.get(GRText.STORAGE_HEADER)
-                  + (_storageState== GRText.STORAGE_NEED_CHOOSE
-                      ? GRText.get(GRText.STORAGE_NEED_CHOOSE)
-                      : GRText.decideStorageText())),
-                  Text(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER)),
-                ],
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                showDialog(context: rootContext, builder: (inContext) {
+                  List<Widget> listRadio= <Widget>[];
+                  for(int i= 0; i< StorageHelper.APP_DIRECTORY_ON_DEVICE.length; i++){
+                    final String dirPath= StorageHelper.APP_DIRECTORY_ON_DEVICE[i].path;
+                    listRadio.add(RadioListTile<String>(
+                      title: RichText(
+                        textAlign: TextAlign.start,
+                        text: TextSpan(
+                          children: TextProcessor.buildSpanFromString(
+                              "<color=000000>"+(i== 0
+                                ? GRText.get(GRText.STORAGE_INSIDE)
+                                : GRText.get(GRText.STORAGE_OUTSIDE))
+                                  + "<br><size-=5>$dirPath</size>",
+                              GameConstant.SPLASH_SIMPLE_TEXT_STYLE),
+                        ),
+                      ),
+                      value: dirPath,
+                      groupValue: UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+                      onChanged: (String? value) {
+                        UserConfig.save(UserConfig.GAME_ASSETS_FOLDER, value!);
+                        Navigator.pop(inContext);
+                      },
+                    ));
+                  }
+                  listRadio.add(ElevatedButton(
+                    child: Text("OK"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.greenAccent,
+                      onPrimary: Colors.black,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(inContext);
+                    },
+                  ));
+                  return AlertDialog(
+                    title: Text(GRText.get(GRText.STORAGE_PLEASE_CHOOSE)),
+                    contentPadding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                    scrollable: true,
+                    content: Column(
+                      children: listRadio,
+                    ),
+                  );
+                },).whenComplete(() {
+                  _checkResource();
+                });
+              },
+              child: Container(
+                margin: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
+                decoration: boxDecoration,
+                child: Container(
+                  child: Column(
+                    children: [
+                      Text(GRText.get(GRText.STORAGE_HEADER),
+                      style: GameConstant.SPLASH_SIMPLE_TEXT_STYLE,),
+                      Text((_storageState== GRText.STORAGE_NEED_CHOOSE
+                          ? GRText.get(GRText.STORAGE_NEED_CHOOSE)
+                          : GRText.decideStorageText()) + ": "
+                          + UserConfig.get(UserConfig.GAME_ASSETS_FOLDER)),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.red),
-              borderRadius: BorderRadius.circular(3),
-            ),
+          Expanded(
+            flex: 1,
             child: Container(
+              margin: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
+              decoration: boxDecoration,
               child: Column(
                 children: [
-                  Text("Download"),
+                  Text(GRText.get(GRText.DOWNLOAD_HEADER),
+                    style: GameConstant.SPLASH_SIMPLE_TEXT_STYLE,),
                   ValueListenableBuilder(valueListenable: _progressNotifier,
                     builder: (context, value, child) {
                       String progressStr= value as String;
@@ -211,6 +306,7 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                           _progressNotifier.value=
                               GRText.get(GRText.STATE_HEADER)
                                   + GRText.get(GRText.STATE_READY);
+                          _checkResource();
                         });
                       }
                       return Text(progressStr);
@@ -218,6 +314,13 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                   ElevatedButton(
                       onPressed: () {
                         if(null!= _listDownloadInfo){return;}
+                        if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length== 0){
+                          //TODO: warning not choose storage
+                          ScaffoldMessenger.of(rootContext).showSnackBar(SnackBar(
+                            content: Text(GRText.get(GRText.STORAGE_PLEASE_CHOOSE)),
+                          ));
+                          return;
+                        }
                         _progressNotifier.value= GRText.get(
                             GRText.DOWNLOAD_DATA_REQUESTING);
                         GRDownloadInfo.getDownloadAssetsList().then((downloadList) {
@@ -230,12 +333,13 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                           }
                         });
                       },
-                      child: Text("Start download")
+                      child: Text(GRText.get(GRText.DOWNLOAD_COMMAND_START))
                   ),
                 ],
               ),
             ),
           ),
+          Flexible(child: Container(),),
         ],
       ),
     );
@@ -248,10 +352,6 @@ class GRDownloadInfo{
   String _url= "";
   String _hashMd5= "";
   int _fileSize= 0;
-
-  //ValueNotifier<String> _progressNotifier= ValueNotifier<String>(
-  //    GRText.get(GRText.DOWNLOAD_PREPARING));
-  //ValueNotifier<String> getNotifier(){return _progressNotifier;}
 
   static Future<List<GRDownloadInfo>> getDownloadAssetsList(){
     Completer<List<GRDownloadInfo>> completer= Completer<List<GRDownloadInfo>>();
@@ -288,12 +388,15 @@ class GRDownloadInfo{
     Completer<bool> completer= Completer<bool>();
     String filePath= CommonFunc.buildPath(
         [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER), _fileName]);
-    Dio().download(_url, filePath+ ".downloading", onReceiveProgress: (count, total) {
+    if(File(filePath+ ".downloading").existsSync()){
+      File(filePath+ ".downloading").deleteSync();
+    }
+    Dio().download(_url, filePath+ ".downloading",
+      onReceiveProgress: (count, total) {
       progressNotifier.value= GRText.get(GRText.DOWNLOAD_PROCESSING)
           + (count* 100/ total).toStringAsFixed(1) + "%";
     },).then((response) {
       if(response.statusCode== 200){
-        print("qqqq2: $_fileSize - $_hashMd5");
         File oldFile= File(filePath);
         oldFile.exists().then((isExist) {
           if(isExist){

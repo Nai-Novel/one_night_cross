@@ -17,7 +17,8 @@ class TextProcessor{
 
   static const String STYLE_TAG_COLOR = "color";
   static const String STYLE_TAG_FONT = "font";
-  static const String STYLE_TAG_SIZE_CHANGE = "size+";
+  static const String STYLE_TAG_SIZE_PLUS = "size+";
+  static const String STYLE_TAG_SIZE_MINUS = "size-";
   static const String STYLE_TAG_FIXED_SIZE = "size";
   static const String STYLE_TAG_ITALIC = "i";
   static const String STYLE_TAG_BOLD = "b";
@@ -128,8 +129,6 @@ class TextProcessor{
             textStyle = textStyle.copyWith(color: orgTextStyle.color);
           }else if(closeTagString== STYLE_TAG_FONT){
             textStyle = textStyle.copyWith(fontFamily: UserConfig.get(UserConfig.TEXT_USER_FONT));
-          }else if(closeTagString== STYLE_TAG_SIZE_CHANGE){
-            textStyle = textStyle.copyWith(fontSize: UserConfig.getDouble(UserConfig.TEXT_SIZE));
           }else if(closeTagString== STYLE_TAG_FIXED_SIZE){
             textStyle = textStyle.copyWith(fontSize: UserConfig.getDouble(UserConfig.TEXT_SIZE));
           }else if(closeTagString== STYLE_TAG_ITALIC){
@@ -149,11 +148,14 @@ class TextProcessor{
           if(changeStyleStringArray.length> 1){
             tagValue= changeStyleStringArray[1];
             if(openTagString== STYLE_TAG_COLOR){
-              textStyle = textStyle.copyWith(color: Color(int.tryParse("FF"+tagValue, radix: 16)!));
+              textStyle = textStyle.copyWith(color: Color(int.tryParse(
+                  tagValue.length== 6 ? "FF"+tagValue : tagValue, radix: 16)!));
             }else if(openTagString== STYLE_TAG_FONT){
               textStyle = textStyle.copyWith(fontFamily: tagValue);
-            }else if(openTagString== STYLE_TAG_SIZE_CHANGE){
+            }else if(openTagString== STYLE_TAG_SIZE_PLUS){
               textStyle = textStyle.copyWith(fontSize: UserConfig.getDouble(UserConfig.TEXT_SIZE) + double.tryParse(tagValue)!);
+            }else if(openTagString== STYLE_TAG_SIZE_MINUS){
+              textStyle = textStyle.copyWith(fontSize: UserConfig.getDouble(UserConfig.TEXT_SIZE) - double.tryParse(tagValue)!);
             }else if(openTagString== STYLE_TAG_FIXED_SIZE){
               textStyle = textStyle.copyWith(fontSize: double.tryParse(tagValue));
             }else if(openTagString== CLICKABLE){

@@ -86,6 +86,7 @@ class GlobalVariable{
 class UserConfig{
   static const String TABLE_USER_CONFIG = "user_config";
 
+  static const String GAME_INFO_JSON = "GAME_INFO_JSON";
   static const String GAME_ASSETS_FOLDER = "GAME_ASSETS_FOLDER";
   static const String MENU_ALIGNMENT = "MENU_ALIGNMENT";
   static const String TEXT_BOX_BACKGROUND_OPACITY = "TEXT_BOX_BACKGROUND_OPACITY";
@@ -112,6 +113,7 @@ class UserConfig{
   static void _init() async {
     Box<String> userConfigBox= Hive.box<String>(TABLE_USER_CONFIG);
     if(userConfigBox.isNotEmpty){return;}
+    await userConfigBox.put(GAME_INFO_JSON, "");
     await userConfigBox.put(GAME_ASSETS_FOLDER, "");
     await userConfigBox.put(MENU_ALIGNMENT, Alignment.topLeft.toString());
     await userConfigBox.put(TEXT_BOX_BACKGROUND_OPACITY, (1).toString());

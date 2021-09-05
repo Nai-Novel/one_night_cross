@@ -305,6 +305,10 @@ class _InitWidgetState extends State<InitWidget> {
                                 GestureDetector(
                                   child: const Text('  [?]', style: GameConstant.SPLASH_DEFAULT_TEXT_STYLE),
                                   onTap: (){
+                                    Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) => GameResource()),
+                                    );
+                                    return;
                                     showDialog(
                                       context: context,
                                       builder: (cText){
