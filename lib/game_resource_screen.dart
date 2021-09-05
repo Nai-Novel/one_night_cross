@@ -16,6 +16,32 @@ import 'text_processor.dart';
 class GameResource extends StatelessWidget {
   const GameResource({Key? key}) : super(key: key);
 
+  static Future<bool> checkResource(){
+    Completer<bool> completer = new Completer<bool>();
+    String gameInfoJsonStr= Convert.utf8.decode(Convert.base64Decode(
+        UserConfig.get(UserConfig.GAME_INFO_JSON)
+    ));
+    List<dynamic> checkInfoListObject= JSON.jsonDecode(gameInfoJsonStr)
+    ['resource_info']['credit_check_file'] as List<dynamic>;
+    int validFileCount= 0;
+    int checkedFileCount= 0;
+    for(dynamic toCheckObj in checkInfoListObject){
+      String filePath= AssetConstant.getTruePath(
+          AssetConstant.ROOT_DIR+ toCheckObj['path']);
+      String md5Str= toCheckObj['hash_md5'];
+      CommonFunc.checkMd5File(filePath,
+          md5Str.substring(0, 16),
+          md5Str.substring(16)).then((result) {
+        checkedFileCount++;
+        if(result){validFileCount++;}
+        if(checkedFileCount>= checkInfoListObject.length){
+          completer.complete(validFileCount== checkedFileCount);
+        }
+      });
+    }
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GameResourceProgress();
@@ -115,20 +141,24 @@ class GameResourceProgress extends StatefulWidget {
 
 class _GameResourceProgressState extends State<GameResourceProgress> {
   String _storageState= GRText.STORAGE_NEED_CHOOSE;
+  bool _resourceReady= false;
   ValueNotifier<String> _progressNotifier= ValueNotifier<String>(
       GRText.get(GRText.DOWNLOAD_COMMAND_WAITING));
   List<GRDownloadInfo>? _listDownloadInfo;
-  bool _isLive= true;
 
-  _checkResource([bool refresh= true]){
+  bool _checkResourceInternal([bool refresh= true]){
+    bool ret= false;
     if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length> 0){
       _storageState= GRText.STORAGE_CHOSEN;
+      ret= true;
     }else{
       _storageState= GRText.STORAGE_NEED_CHOOSE;
     }
-    if(refresh){
+    GameResource.checkResource().then((value) {
+      _resourceReady= value;
       setState(() {});
-    }
+    });
+    return ret;
   }
 
   Future<void> _decodeResource(){
@@ -150,14 +180,8 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
 
   @override
   void initState() {
-    _checkResource(false);
+    _checkResourceInternal(false);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _isLive= false;
-    super.dispose();
   }
 
   @override
@@ -191,7 +215,6 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
           valueListenable: _progressNotifier,
           builder: (context, value, child) {
             String progress= value as String;
-            //TODO: change color for state
             if(progress!= readyText){
               return Text(GRText.get(GRText.STATE_HEADER)
                   + GRText.get(GRText.STATE_NOT_READY));
@@ -202,7 +225,7 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(rootContext),
         ),
-        backgroundColor: _progressNotifier.value!= readyText ? Colors.grey : null,
+        backgroundColor: !_resourceReady ? Colors.grey : null,
       ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -253,7 +276,7 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                     ),
                   );
                 },).whenComplete(() {
-                  _checkResource();
+                  _checkResourceInternal();
                 });
               },
               child: Container(
@@ -306,7 +329,7 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                           _progressNotifier.value=
                               GRText.get(GRText.STATE_HEADER)
                                   + GRText.get(GRText.STATE_READY);
-                          _checkResource();
+                          _checkResourceInternal();
                         });
                       }
                       return Text(progressStr);
@@ -315,7 +338,6 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                       onPressed: () {
                         if(null!= _listDownloadInfo){return;}
                         if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length== 0){
-                          //TODO: warning not choose storage
                           ScaffoldMessenger.of(rootContext).showSnackBar(SnackBar(
                             content: Text(GRText.get(GRText.STORAGE_PLEASE_CHOOSE)),
                           ));

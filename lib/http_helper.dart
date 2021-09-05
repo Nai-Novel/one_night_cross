@@ -30,6 +30,9 @@ class HttpHelper{
         _gameInfoJson= Convert.utf8.decode(Convert.base64Decode(encodedJsonStr));
       }
       completer.complete(_gameInfoJson);
+    }).catchError((_){
+      String _gameInfoJson= UserConfig.get(UserConfig.GAME_INFO_JSON);
+      completer.complete(Convert.utf8.decode(Convert.base64Decode(_gameInfoJson)));
     });
     return completer.future;
   }

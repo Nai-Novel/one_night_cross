@@ -379,7 +379,7 @@ class CommonFunc {
     if (file.existsSync()) {
       try {
         Hash.md5.bind(file.openRead()).first.then((value) {
-          completer.complete(value.toString().toUpperCase()== (toCheck1+ toCheck2));
+          completer.complete(value.toString().toLowerCase()== (toCheck1+ toCheck2));
         });
       } catch (exception) {
         completer.complete(false);

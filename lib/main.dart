@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'game.dart';
 import 'game_resource_screen.dart';
+import 'http_helper.dart';
 import 'script_runner.dart';
 import 'text_processor.dart';
 import 'com_cons.dart';
@@ -92,22 +93,23 @@ class _InitWidgetState extends State<InitWidget> {
     });
   }
   void checkFileHash() {
-    _hashCheckResult.value= true;
-    //if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length> 0){
-    //  String filePath= AssetConstant.getTruePath(AssetConstant.CHECK_HASH_FILE_PATH);
-    //  CommonFunc.checkMd5File(filePath, "A60226EB91F11F4F", "1DFE28C090CA0F11").then((result) {
-    //    _hashCheckResult.value= result;
-    //    if(result){
-    //      _progressString.value= GameText.SPLASH_GAME_RESOURCE_READY;
-    //      autoUpdateFile();
-    //    }else{
-    //      _progressString.value= GameText.SPLASH_GAME_RESOURCE_NOT_READY;
-    //    }
-    //  });
-    //}else{
-    //  _hashCheckResult.value= false;
-    //  _progressString.value= GameText.SPLASH_GAME_RESOURCE_NOT_READY;
-    //}
+    HttpHelper.getGameInfoJson().then((gameInfoJson) {
+      if(gameInfoJson.length> 0){
+        GameResource.checkResource().then((result) {
+          if(result){
+            _hashCheckResult.value= true;
+            _progressString.value= GameText.SPLASH_GAME_RESOURCE_READY;
+            //TODO: autoUpdateFile();
+          }else{
+            _hashCheckResult.value= false;
+            _progressString.value= GameText.SPLASH_GAME_RESOURCE_NOT_READY;
+          }
+        });
+      }else{
+        _hashCheckResult.value= false;
+        _progressString.value= GameText.SPLASH_GAME_RESOURCE_NOT_READY;
+      }
+    });
   }
   void startDownloadResource(){
     if(_listDownloadCommand!.length> 0){
