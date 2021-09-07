@@ -312,24 +312,6 @@ class CommonFunc {
     return Alignment(double.parse(alignStr[0]), double.parse(alignStr[1]));
   }
 
-  static String buildPath(List<String> params){
-    String? ret;
-    bool lastParamEndWithSeparator= false;
-    for(String aParam in params){
-      if(ret== null){
-        ret= aParam;
-      }else{
-        if(!lastParamEndWithSeparator){
-          ret += Platform.pathSeparator;
-        }
-        ret += aParam;
-      }
-      lastParamEndWithSeparator= aParam.endsWith(Platform.pathSeparator);
-    }
-
-    return ret!;
-  }
-
   static Size getImageSizeInPath(String imagePath){
     double width = 0, height = 0;
     String imageName = imagePath.substring(

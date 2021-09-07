@@ -33,12 +33,12 @@ class StorageHelper{
       throw("ExternalStorageDirectories was null!");
     }
     APP_DIRECTORY_ON_DEVICE= externalStorageDirectories;
-    APP_SAVE_DIR_FULL_PATH= CommonFunc.buildPath([APP_DIRECTORY_ON_DEVICE[0].path, APP_SAVE_DIR]);
+    APP_SAVE_DIR_FULL_PATH= Path.join(APP_DIRECTORY_ON_DEVICE[0].path, APP_SAVE_DIR);
     Hive.init(APP_SAVE_DIR_FULL_PATH);
     Hive.registerAdapter(SavesInfoAdapter());
     Hive.registerAdapter(SingleSaveInfoAdapter());
 
-    GAME_SAVE_THUMB_DIR = CommonFunc.buildPath([APP_DIRECTORY_ON_DEVICE[0].path, "save_thumb/"]);
+    GAME_SAVE_THUMB_DIR = Path.join(APP_DIRECTORY_ON_DEVICE[0].path, "save_thumb/");
     if(!Directory(GAME_SAVE_THUMB_DIR).existsSync()){
       Directory(GAME_SAVE_THUMB_DIR).create(recursive: true);
     }
@@ -344,8 +344,8 @@ class SavesInfo extends HiveObject{
   }
 
   static String getSaveFullPath(int type, int slot){
-    return CommonFunc.buildPath([StorageHelper.APP_SAVE_DIR_FULL_PATH,
-      SavesInfo.TABLE_SAVE+ getKey(type, slot)+ ".hive"]);
+    return Path.join(StorageHelper.APP_SAVE_DIR_FULL_PATH,
+      SavesInfo.TABLE_SAVE+ getKey(type, slot)+ ".hive");
   }
 
   static haveCurrentData(){
@@ -640,9 +640,9 @@ class AlreadyReadHelper{
   static void init() async {
     Box<Uint8List> box= await Hive.openBox<Uint8List>(ALREADY_READ_TABLE_NAME);
     if(box.isEmpty){
-      Directory scriptDir= Directory(CommonFunc.buildPath(
-          [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
-            AssetConstant.SCRIPT_DIR]));
+      Directory scriptDir= Directory(Path.join(
+          UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+          AssetConstant.SCRIPT_DIR));
       if(scriptDir.existsSync()){
         scriptDir.list().listen((data) {
           if(data is File){
@@ -666,10 +666,10 @@ class AlreadyReadHelper{
     if(fileName.length== 0 || fileName== ScriptItem.FAKE_SCRIPT_NAME_PREFIX){return;}
     Box<Uint8List> box= Hive.box<Uint8List>(ALREADY_READ_TABLE_NAME);
     if(!box.containsKey(fileName)){
-      String filePath= CommonFunc.buildPath(
-          [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+      String filePath= Path.join(
+          UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
             AssetConstant.SCRIPT_DIR,
-            fileName+ ScriptItem.FILE_EXTENSION]);
+            fileName+ ScriptItem.FILE_EXTENSION);
       box.put(fileName, Uint8List(File(filePath).readAsLinesSync().length* 2));
     }
     int index= (line/ 8).truncate();

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart' as Path;
 import 'audio_helper.dart';
 import 'game_widget_helper.dart';
 import 'image_helper.dart';
@@ -1283,12 +1284,12 @@ class _ImageContainerState extends State<ImageContainer>
         );
         break;
       case ScriptCommand.IMAGE_TYPE_MULTIPLE_LANGUAGE:
-        _imageSinglePath = AssetConstant.getTruePath(CommonFunc.buildPath([
+        _imageSinglePath = AssetConstant.getTruePath(Path.join(
           AssetConstant.MULTIPLE_LANGUAGE_DIR,
           UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE)
               ? UserConfig.get(UserConfig.GAME_MAIN_LANGUAGE)
               : UserConfig.get(UserConfig.GAME_SUB_LANGUAGE),
-          _imageRawPath]));
+          _imageRawPath));
         Size imageSize = CommonFunc.getImageSizeInPath(_imageSinglePath);
 
         _imageOrgWidth = imageSize.width * GameConstant.gameCgSizeRatio;
@@ -1329,11 +1330,10 @@ class _ImageContainerState extends State<ImageContainer>
     }
     if(commandInfo.containKey(ScriptCommand.IMAGE_TYPE_SPRITE_BODY)){
       _rawCharBody= commandInfo.valueOf(ScriptCommand.IMAGE_TYPE_SPRITE_BODY)!;
-      String _pathCharBody = CommonFunc.buildPath([
+      String _pathCharBody = Path.join(
         _imageSinglePath,
         ScriptCommand.IMAGE_TYPE_SPRITE_BODY,
-        _rawCharBody
-      ]);
+        _rawCharBody);
       _pathCharBody = AssetConstant.getTruePath(_pathCharBody);
       Size bodyImageSize = CommonFunc.getImageSizeInPath(_pathCharBody);
 
@@ -1453,12 +1453,12 @@ class _ImageContainerState extends State<ImageContainer>
         );
         break;
       case ScriptCommand.IMAGE_TYPE_MULTIPLE_LANGUAGE:
-        _imageSinglePath = AssetConstant.getTruePath(CommonFunc.buildPath([
+        _imageSinglePath = AssetConstant.getTruePath(Path.join(
           AssetConstant.MULTIPLE_LANGUAGE_DIR,
           UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE)
               ? UserConfig.get(UserConfig.GAME_MAIN_LANGUAGE)
               : UserConfig.get(UserConfig.GAME_SUB_LANGUAGE),
-          _imageRawPath]));
+          _imageRawPath));
         Size imageSize = CommonFunc.getImageSizeInPath(_imageSinglePath);
 
         _imageOrgWidth = imageSize.width * GameConstant.gameCgSizeRatio;
@@ -1477,11 +1477,10 @@ class _ImageContainerState extends State<ImageContainer>
         if(commandInfo.containKey(ScriptCommand.IMAGE_TYPE_SPRITE_EMOTION)){
           _rawCharEmo= commandInfo.valueOf(ScriptCommand.IMAGE_TYPE_SPRITE_EMOTION)!;
         }
-        String _pathCharBody = CommonFunc.buildPath([
+        String _pathCharBody = Path.join(
           _imageSinglePath,
           ScriptCommand.IMAGE_TYPE_SPRITE_BODY,
-          _rawCharBody
-        ]);
+          _rawCharBody);
         _pathCharBody = AssetConstant.getTruePath(_pathCharBody);
         Size bodyImageSize = CommonFunc.getImageSizeInPath(_pathCharBody);
         _imageInside = SpriteContainer(key: UniqueKey(), commandInfo: commandInfo);
@@ -2056,11 +2055,10 @@ class _SpriteContainerState extends State<SpriteContainer> {
     if (commandInfo.containKey(ScriptCommand.IMAGE_TYPE_SPRITE_BODY)){
       editBody= true;
       _rawBodyPath= commandInfo.valueOf(ScriptCommand.IMAGE_TYPE_SPRITE_BODY)!;
-      String _pathCharBody = CommonFunc.buildPath([
+      String _pathCharBody = Path.join(
         _charRootPath,
         ScriptCommand.IMAGE_TYPE_SPRITE_BODY,
-        _rawBodyPath!
-      ]);
+        _rawBodyPath!);
       _pathCharBody = AssetConstant.getTruePath(_pathCharBody);
       _imageBody= Image(
         key: UniqueKey(),
@@ -2076,11 +2074,10 @@ class _SpriteContainerState extends State<SpriteContainer> {
     if (commandInfo.containKey(ScriptCommand.IMAGE_TYPE_SPRITE_EMOTION)) {
       editEmo= true;
       _rawCharEmo= commandInfo.valueOf(ScriptCommand.IMAGE_TYPE_SPRITE_EMOTION)!;
-      String _pathCharEmo = CommonFunc.buildPath([
+      String _pathCharEmo = Path.join(
         _charRootPath,
         ScriptCommand.IMAGE_TYPE_SPRITE_EMOTION,
-        _rawCharEmo!
-      ]);
+        _rawCharEmo!);
       _pathCharEmo = AssetConstant.getTruePath(_pathCharEmo);
       _imageEmo= Image(
         key: UniqueKey(),
@@ -2153,11 +2150,10 @@ class _SpriteContainerState extends State<SpriteContainer> {
       int lipCount= 0;
 
       for(int i= 1; i< 3; i++){
-        String _pathCharLip = CommonFunc.buildPath([
+        String _pathCharLip = Path.join(
           _charRootPath,
           ScriptCommand.IMAGE_TYPE_SPRITE_BODY,
-          localRawBodyPath.substring(0, localRawBodyPath.length- 1)+ i.toString()
-        ]);
+          localRawBodyPath.substring(0, localRawBodyPath.length- 1)+ i.toString());
         _lipsWidget.add(Image(
           fit: BoxFit.fill,
           image: FileImage(File(AssetConstant.getTruePath(_pathCharLip))),
@@ -3413,21 +3409,21 @@ class _MenuContainerState extends State<MenuContainer> {
                             ],
                           ),
                         ),
-                        WidgetHelper.getMenuButton(GameText.MENU_TRIGGER_AUTO,
-                            _scriptRunner.haveRunFlag(ScriptRunFlag.AUTO), () {
-                          _doAppCommand(MyAppCmd.SWITCH_AUTO_READ);
-                          _switchTriggerWidget(null);
-                        }),
-                        WidgetHelper.getMenuButton(GameText.MENU_TRIGGER_SKIP_READ,
-                            _scriptRunner.haveRunFlag(ScriptRunFlag.SKIP_READ), () {
-                          _doAppCommand(MyAppCmd.SWITCH_SKIP_READ);
-                          _switchTriggerWidget(null);
-                        }),
-                        WidgetHelper.getMenuButton(GameText.MENU_TRIGGER_SKIP_ALL,
-                            _scriptRunner.haveRunFlag(ScriptRunFlag.SKIP_ALL), () {
-                          _doAppCommand(MyAppCmd.SWITCH_SKIP_ALL);
-                          _switchTriggerWidget(null);
-                        }),
+                        //WidgetHelper.getMenuButton(GameText.MENU_TRIGGER_AUTO,
+                        //    _scriptRunner.haveRunFlag(ScriptRunFlag.AUTO), () {
+                        //  _doAppCommand(MyAppCmd.SWITCH_AUTO_READ);
+                        //  _switchTriggerWidget(null);
+                        //}),
+                        //WidgetHelper.getMenuButton(GameText.MENU_TRIGGER_SKIP_READ,
+                        //    _scriptRunner.haveRunFlag(ScriptRunFlag.SKIP_READ), () {
+                        //  _doAppCommand(MyAppCmd.SWITCH_SKIP_READ);
+                        //  _switchTriggerWidget(null);
+                        //}),
+                        //WidgetHelper.getMenuButton(GameText.MENU_TRIGGER_SKIP_ALL,
+                        //    _scriptRunner.haveRunFlag(ScriptRunFlag.SKIP_ALL), () {
+                        //  _doAppCommand(MyAppCmd.SWITCH_SKIP_ALL);
+                        //  _switchTriggerWidget(null);
+                        //}),
                         WidgetHelper.getMenuButton(GameText.MENU_CONFIG,
                             _triggeringText== GameText.MENU_CONFIG, () {
                           _switchTriggerWidget(GameText.MENU_CONFIG);
@@ -3442,9 +3438,9 @@ class _MenuContainerState extends State<MenuContainer> {
                         }),
                         WidgetHelper.getMenuButton(GameText.MENU_HIDE_TEXT_BOX,
                             false, () {
-                              _doAppCommand(MyAppCmd.HIDE_TEXT_BOX);
-                              _switchTriggerWidget(null);
-                            }),
+                          _doAppCommand(MyAppCmd.HIDE_TEXT_BOX);
+                          _switchTriggerWidget(null);
+                        }),
                         WidgetHelper.getMenuButton("＜ ー ＞",
                             false, () {
                               UserConfig.save(UserConfig.MENU_ALIGNMENT,

@@ -13,6 +13,7 @@ import 'storage_helper.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+import 'package:path/path.dart' as Path;
 
 void main() {
   //Let device allow app to set Orientation
@@ -57,17 +58,17 @@ class _InitWidgetState extends State<InitWidget> {
       }
       for(String aCommand in result){
         ScriptCommandInfo commandInfo= ScriptCommandInfo(aCommand);
-        String dirPath= CommonFunc.buildPath(
-            [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
-              commandInfo.valueOf("path")!]);
+        String dirPath= Path.join(
+            UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+              commandInfo.valueOf("path")!);
         if(!Directory(dirPath).existsSync()){
           continue;
         }
 
-        String filePath= CommonFunc.buildPath(
-            [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+        String filePath= Path.join(
+            UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
               commandInfo.valueOf("path")!,
-              commandInfo.valueOf("name")!.replaceAll("{.,}", ";")]);
+              commandInfo.valueOf("name")!.replaceAll("{.,}", ";"));
         CommonFunc.checkMd5File(filePath,
             commandInfo.valueOf("md5")!.substring(0, 16),
             commandInfo.valueOf("md5")!.substring(16)).then((result) {
@@ -114,10 +115,10 @@ class _InitWidgetState extends State<InitWidget> {
   void startDownloadResource(){
     if(_listDownloadCommand!.length> 0){
       ScriptCommandInfo commandInfo= ScriptCommandInfo(_listDownloadCommand!.removeAt(0));
-      final String rarFilePath= CommonFunc.buildPath(
-          [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+      final String rarFilePath= Path.join(
+          UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
             AssetConstant.RESOURCE_DOWNLOAD_DIR,
-            commandInfo.valueOf("name")!]);
+            commandInfo.valueOf("name")!);
       Dio().download(commandInfo.valueOf("url")!, rarFilePath, onReceiveProgress: (rec, total){
         _progressString.value= "${GameText.SPLASH_GAME_RESOURCE_DOWNLOADING}:"
             " ${(rec/ 1000000).toStringAsFixed(1)}Mb / ${_listDownloadCommand!.length+ 1} files";
@@ -369,9 +370,9 @@ class _InitWidgetState extends State<InitWidget> {
                                   onTap: (){
                                     if(_listDownloadCommand!= null){return;}
                                     HttpProcessor.getResourceCommand().then((result) {
-                                      String dirPath= CommonFunc.buildPath(
-                                          [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
-                                            AssetConstant.RESOURCE_DOWNLOAD_DIR]);
+                                      String dirPath= Path.join(
+                                          UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+                                            AssetConstant.RESOURCE_DOWNLOAD_DIR);
                                       Directory zipDir= Directory(dirPath);
                                       if(!zipDir.existsSync()){
                                         zipDir.createSync(recursive: true);
@@ -379,10 +380,10 @@ class _InitWidgetState extends State<InitWidget> {
 
                                       for(String aCommand in result){
                                         ScriptCommandInfo commandInfo= ScriptCommandInfo(aCommand);
-                                        String filePath= CommonFunc.buildPath(
-                                            [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+                                        String filePath= Path.join(
+                                            UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
                                               AssetConstant.RESOURCE_DOWNLOAD_DIR,
-                                              commandInfo.valueOf("name")!]);
+                                              commandInfo.valueOf("name")!);
                                         if(File(filePath).existsSync()){
                                           File(filePath).deleteSync();
                                         }

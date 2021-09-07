@@ -5,6 +5,7 @@ import 'audio_helper.dart';
 import 'storage_helper.dart';
 import 'text_processor.dart';
 import 'dart:ui' as ui;
+import 'package:path/path.dart' as Path;
 
 import 'com_cons.dart';
 
@@ -1068,10 +1069,10 @@ class ScriptItem{
   }
 
   static List<String> loadScriptContent(String name) {
-    File scriptFile= File(CommonFunc.buildPath(
-        [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
+    File scriptFile= File(Path.join(
+        UserConfig.get(UserConfig.GAME_ASSETS_FOLDER),
           AssetConstant.SCRIPT_DIR,
-          name+ ScriptItem.FILE_EXTENSION]));
+          name+ ScriptItem.FILE_EXTENSION));
     if(scriptFile.existsSync()){
       return scriptFile.readAsLinesSync();
     }

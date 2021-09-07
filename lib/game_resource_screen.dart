@@ -408,8 +408,8 @@ class GRDownloadInfo{
 
   Future<bool> download(ValueNotifier progressNotifier){
     Completer<bool> completer= Completer<bool>();
-    String filePath= CommonFunc.buildPath(
-        [UserConfig.get(UserConfig.GAME_ASSETS_FOLDER), _fileName]);
+    String filePath= Path.join(
+        UserConfig.get(UserConfig.GAME_ASSETS_FOLDER), _fileName);
     if(File(filePath+ ".downloading").existsSync()){
       File(filePath+ ".downloading").deleteSync();
     }
