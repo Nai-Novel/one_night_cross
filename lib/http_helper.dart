@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:convert' as Convert;
-import 'package:hive/hive.dart';
 
 import 'package:dio/dio.dart';
-import 'package:one_night_cross/storage_helper.dart';
+import 'storage_helper.dart';
 
 class HttpHelper{
   static const String GAME_INFO_URL= "https://raw.githubusercontent.com/" +

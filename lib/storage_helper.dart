@@ -95,7 +95,7 @@ class UserConfig{
   static const String GAME_VOLUME_SE = "GAME_VOLUME_SE";
   static const String GAME_VOLUME_VOICE_COMMON = "GAME_VOLUME_VOICE_COMMON";
   static const String MENU_LANGUAGE = "MENU_LANGUAGE";
-  static const String IS_ACTIVE_MAIN_LANGUAGE = "IS_ACTIVE_JP_LANGUAGE";
+  static const String IS_ACTIVE_MAIN_LANGUAGE = "IS_ACTIVE_MAIN_LANGUAGE";
   static const String IS_ACTIVE_SUB_LANGUAGE = "IS_ACTIVE_SUB_LANGUAGE";
   static const String GAME_MAIN_LANGUAGE = "GAME_MAIN_LANGUAGE";
   static const String GAME_SUB_LANGUAGE = "GAME_SUB_LANGUAGE";
@@ -646,7 +646,8 @@ class AlreadyReadHelper{
       if(scriptDir.existsSync()){
         scriptDir.list().listen((data) {
           if(data is File){
-            box.put(Path.basenameWithoutExtension(data.path), Uint8List(File(data.path).readAsLinesSync().length* 2));
+            box.put(Path.basenameWithoutExtension(data.path),
+                Uint8List(File(data.path).readAsLinesSync().length* 2));
           }
         });
       }
@@ -680,11 +681,13 @@ class AlreadyReadHelper{
   }
 
   static bool wasRead(String? fileName, int line){
-    if(fileName== null || !Hive.box<Uint8List>(ALREADY_READ_TABLE_NAME).containsKey(fileName)){return false;}
+    if(fileName== null || !Hive.box<Uint8List>(ALREADY_READ_TABLE_NAME)
+        .containsKey(fileName)){return false;}
     int index= (line/ 8).truncate();
     int insideIndex= line % 8;
     int toCheck= 1<< insideIndex;
-    return Hive.box<Uint8List>(ALREADY_READ_TABLE_NAME).get(fileName)![index] & toCheck == toCheck;
+    return Hive.box<Uint8List>(ALREADY_READ_TABLE_NAME)
+        .get(fileName)![index] & toCheck == toCheck;
   }
 }
 

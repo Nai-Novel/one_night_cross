@@ -21,6 +21,10 @@ class GameResource extends StatelessWidget {
     String gameInfoJsonStr= Convert.utf8.decode(Convert.base64Decode(
         UserConfig.get(UserConfig.GAME_INFO_JSON)
     ));
+    if(gameInfoJsonStr.length== 0){
+      completer.complete(false);
+      return completer.future;
+    }
     List<dynamic> checkInfoListObject= JSON.jsonDecode(gameInfoJsonStr)
     ['resource_info']['credit_check_file'] as List<dynamic>;
     int validFileCount= 0;
@@ -49,7 +53,7 @@ class GameResource extends StatelessWidget {
 }
 
 //GameResourceText
-class GRText{
+class _GRText{
   static const String STATE_HEADER = "STATE_HEADER";
   static const String STATE_READY = "STATE_READY";
   static const String STATE_NOT_READY = "STATE_NOT_READY";
@@ -140,19 +144,19 @@ class GameResourceProgress extends StatefulWidget {
 }
 
 class _GameResourceProgressState extends State<GameResourceProgress> {
-  String _storageState= GRText.STORAGE_NEED_CHOOSE;
+  String _storageState= _GRText.STORAGE_NEED_CHOOSE;
   bool _resourceReady= false;
   ValueNotifier<String> _progressNotifier= ValueNotifier<String>(
-      GRText.get(GRText.DOWNLOAD_COMMAND_WAITING));
+      _GRText.get(_GRText.DOWNLOAD_COMMAND_WAITING));
   List<GRDownloadInfo>? _listDownloadInfo;
 
   bool _checkResourceInternal([bool refresh= true]){
     bool ret= false;
     if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length> 0){
-      _storageState= GRText.STORAGE_CHOSEN;
+      _storageState= _GRText.STORAGE_CHOSEN;
       ret= true;
     }else{
-      _storageState= GRText.STORAGE_NEED_CHOOSE;
+      _storageState= _GRText.STORAGE_NEED_CHOOSE;
     }
     GameResource.checkResource().then((value) {
       _resourceReady= value;
@@ -208,16 +212,16 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
         ),
       ],
     );
-    String readyText= GRText.get(GRText.STATE_HEADER)
-        + GRText.get(GRText.STATE_READY);
+    String readyText= _GRText.get(_GRText.STATE_HEADER)
+        + _GRText.get(_GRText.STATE_READY);
     return Scaffold(
       appBar: AppBar(title: ValueListenableBuilder(
           valueListenable: _progressNotifier,
           builder: (context, value, child) {
             String progress= value as String;
             if(progress!= readyText){
-              return Text(GRText.get(GRText.STATE_HEADER)
-                  + GRText.get(GRText.STATE_NOT_READY));
+              return Text(_GRText.get(_GRText.STATE_HEADER)
+                  + _GRText.get(_GRText.STATE_NOT_READY));
             }
             return Text(readyText);
           },),
@@ -243,8 +247,8 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                         text: TextSpan(
                           children: TextProcessor.buildSpanFromString(
                               "<color=000000>"+(i== 0
-                                ? GRText.get(GRText.STORAGE_INSIDE)
-                                : GRText.get(GRText.STORAGE_OUTSIDE))
+                                ? _GRText.get(_GRText.STORAGE_INSIDE)
+                                : _GRText.get(_GRText.STORAGE_OUTSIDE))
                                   + "<br><size-=5>$dirPath</size>",
                               GameConstant.SPLASH_SIMPLE_TEXT_STYLE),
                         ),
@@ -268,7 +272,7 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                     },
                   ));
                   return AlertDialog(
-                    title: Text(GRText.get(GRText.STORAGE_PLEASE_CHOOSE)),
+                    title: Text(_GRText.get(_GRText.STORAGE_PLEASE_CHOOSE)),
                     contentPadding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
                     scrollable: true,
                     content: Column(
@@ -286,11 +290,11 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                 child: Container(
                   child: Column(
                     children: [
-                      Text(GRText.get(GRText.STORAGE_HEADER),
+                      Text(_GRText.get(_GRText.STORAGE_HEADER),
                       style: GameConstant.SPLASH_SIMPLE_TEXT_STYLE,),
-                      Text((_storageState== GRText.STORAGE_NEED_CHOOSE
-                          ? GRText.get(GRText.STORAGE_NEED_CHOOSE)
-                          : GRText.decideStorageText()) + ": "
+                      Text((_storageState== _GRText.STORAGE_NEED_CHOOSE
+                          ? _GRText.get(_GRText.STORAGE_NEED_CHOOSE)
+                          : _GRText.decideStorageText()) + ": "
                           + UserConfig.get(UserConfig.GAME_ASSETS_FOLDER)),
                     ],
                   ),
@@ -306,29 +310,29 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
               decoration: boxDecoration,
               child: Column(
                 children: [
-                  Text(GRText.get(GRText.DOWNLOAD_HEADER),
+                  Text(_GRText.get(_GRText.DOWNLOAD_HEADER),
                     style: GameConstant.SPLASH_SIMPLE_TEXT_STYLE,),
                   ValueListenableBuilder(valueListenable: _progressNotifier,
                     builder: (context, value, child) {
                       String progressStr= value as String;
-                      if(GRText.get(GRText.DOWNLOAD_ONE_FILE_DONE)== progressStr){
+                      if(_GRText.get(_GRText.DOWNLOAD_ONE_FILE_DONE)== progressStr){
                         _listDownloadInfo!.removeAt(0);
                         if(_listDownloadInfo!.length> 0){
                           _listDownloadInfo![0].download(_progressNotifier);
                         }else{
                           WidgetsBinding.instance!.addPostFrameCallback((_) {
                             WidgetsFlutterBinding.ensureInitialized();
-                            _progressNotifier.value= GRText.get(
-                                GRText.DOWNLOAD_ALL_DONE);
+                            _progressNotifier.value= _GRText.get(
+                                _GRText.DOWNLOAD_ALL_DONE);
                             _listDownloadInfo= null;
                           });
                         }
                       }
-                      if(GRText.get(GRText.DOWNLOAD_ALL_DONE)== progressStr){
+                      if(_GRText.get(_GRText.DOWNLOAD_ALL_DONE)== progressStr){
                         _decodeResource().whenComplete(() {
                           _progressNotifier.value=
-                              GRText.get(GRText.STATE_HEADER)
-                                  + GRText.get(GRText.STATE_READY);
+                              _GRText.get(_GRText.STATE_HEADER)
+                                  + _GRText.get(_GRText.STATE_READY);
                           _checkResourceInternal();
                         });
                       }
@@ -339,23 +343,23 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                         if(null!= _listDownloadInfo){return;}
                         if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length== 0){
                           ScaffoldMessenger.of(rootContext).showSnackBar(SnackBar(
-                            content: Text(GRText.get(GRText.STORAGE_PLEASE_CHOOSE)),
+                            content: Text(_GRText.get(_GRText.STORAGE_PLEASE_CHOOSE)),
                           ));
                           return;
                         }
-                        _progressNotifier.value= GRText.get(
-                            GRText.DOWNLOAD_DATA_REQUESTING);
+                        _progressNotifier.value= _GRText.get(
+                            _GRText.DOWNLOAD_DATA_REQUESTING);
                         GRDownloadInfo.getDownloadAssetsList().then((downloadList) {
                           if(downloadList.isEmpty){
-                            _progressNotifier.value= GRText.get(
-                                GRText.DOWNLOAD_DATA_REQUEST_FAILED);
+                            _progressNotifier.value= _GRText.get(
+                                _GRText.DOWNLOAD_DATA_REQUEST_FAILED);
                           }else{
                             _listDownloadInfo= downloadList;
                             _listDownloadInfo![0].download(_progressNotifier);
                           }
                         });
                       },
-                      child: Text(GRText.get(GRText.DOWNLOAD_COMMAND_START))
+                      child: Text(_GRText.get(_GRText.DOWNLOAD_COMMAND_START))
                   ),
                 ],
               ),
@@ -415,7 +419,7 @@ class GRDownloadInfo{
     }
     Dio().download(_url, filePath+ ".downloading",
       onReceiveProgress: (count, total) {
-      progressNotifier.value= GRText.get(GRText.DOWNLOAD_PROCESSING)
+      progressNotifier.value= _GRText.get(_GRText.DOWNLOAD_PROCESSING)
           + (count* 100/ total).toStringAsFixed(1) + "%";
     },).then((response) {
       if(response.statusCode== 200){
@@ -444,11 +448,11 @@ class GRDownloadInfo{
           zipFile: zipFile,
           destinationDir: destinationDir,
           onExtracting: (zipEntry, progress) {
-            progressNotifier.value= "${GRText.get(GRText.DOWNLOAD_EXTRACTING)}"
+            progressNotifier.value= "${_GRText.get(_GRText.DOWNLOAD_EXTRACTING)}"
                 "${progress.toStringAsFixed(1)}%";
             if(progress>= 100){
               zipFile.delete().whenComplete(() {
-                progressNotifier.value= GRText.get(GRText.DOWNLOAD_ONE_FILE_DONE);
+                progressNotifier.value= _GRText.get(_GRText.DOWNLOAD_ONE_FILE_DONE);
               });
             }
             return ZipFileOperation.includeItem;

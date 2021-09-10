@@ -546,7 +546,7 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
 
   @override
   Widget build(BuildContext context) {
-    if(_isDisplay){
+    if(_isDisplay && !_userChosen){
       SchedulerBinding.instance!.addPostFrameCallback((_) {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
         _scrollController.animateTo(0,
