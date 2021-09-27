@@ -1,64 +1,79 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:one_night_cross/http_helper.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'game.dart';
 import 'game_resource_screen.dart';
 import 'script_runner.dart';
 import 'text_processor.dart';
 import 'com_cons.dart';
 import 'storage_helper.dart';
-import 'package:dio/dio.dart';
-import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
-import 'package:path/path.dart' as Path;
 
 void main() {
   //Let device allow app to set Orientation
   WidgetsFlutterBinding.ensureInitialized();
   //Initialize StorageHelper
   StorageHelper.init().whenComplete(() {
-    //Set game orientation then run MyApp
+    HttpHelper.getGameInfoJson();
+    HttpHelper.getCommonOnlineInfo();
+    //Set game orientation then run App
     //TODO: Set native device orientation if need
     SystemChrome.setPreferredOrientations(GameConstant.GAME_ORIENTATION)
-        .whenComplete(() => runApp(
-        MaterialApp(
-          theme: ThemeData(fontFamily: 'Linotte'),
-          home: SafeArea(child: InitWidget(),),
-        )),
+        .whenComplete(() => runApp(MaterialApp(
+      home: SafeArea(child: InitWidget(),),)),
     );
   });
 }
 
 //SplashText
-class _SPText{
+class _SText{
   static const String LEFT_SIDE_TITLE = "LEFT_SIDE_TITLE";
-  static const String OPEN_GAME_TITLE_NOT_READY = "OPEN_GAME_TITLE_NOT_READY";
-  static const String OPEN_GAME_TITLE_READY = "OPEN_GAME_TITLE_READY";
-  static const String OPEN_GAME_START = "OPEN_GAME_START";
-  static const String OPEN_GAME_CONTINUE = "OPEN_GAME_CONTINUE";
-  static const String OPEN_GAME_GOTO_RESOURCE_SCREEN = "OPEN_GAME_GOTO_RESOURCE_SCREEN";
+  static const String GAME_TITLE_NOT_READY = "GAME_TITLE_NOT_READY";
+  static const String GAME_TITLE_READY = "GAME_TITLE_READY";
+  static const String GAME_START = "GAME_START";
+  static const String GAME_CONTINUE = "GAME_CONTINUE";
+  static const String GAME_GOTO_RESOURCE_SCREEN = "GAME_GOTO_RESOURCE_SCREEN";
+  static const String GAME_GUIDE = "GAME_GUIDE";
+  static const String GAME_BUG_REPORT = "GAME_BUG_REPORT";
+  static const String GAME_SURVEY = "GAME_SURVEY";
+
+  static const String RIGHT_SIDE_TITLE = "RIGHT_SIDE_TITLE";
+
+  static const String COMMON_URL_NOT_FOUND = "COMMON_URL_NOT_FOUND";
 
   static String get(String txt) {
     String lang= UserConfig.get(UserConfig.MENU_LANGUAGE);
     if (lang == Language.VIETNAMESE) {
       switch(txt) {
         case LEFT_SIDE_TITLE: return "Ứng dụng";
-        case OPEN_GAME_TITLE_NOT_READY: return "Dữ liệu game chưa sẵn sàng";
-        case OPEN_GAME_TITLE_READY: return "GAME!!!";
-        case OPEN_GAME_START: return "Bắt đầu";
-        case OPEN_GAME_CONTINUE: return "Tiếp tục";
-        case OPEN_GAME_GOTO_RESOURCE_SCREEN: return "Tải xuống dữ liệu";
+        case GAME_TITLE_NOT_READY: return "Dữ liệu game chưa sẵn sàng";
+        case GAME_TITLE_READY: return "GAME!!!";
+        case GAME_START: return "Bắt đầu";
+        case GAME_CONTINUE: return "Tiếp tục";
+        case GAME_GOTO_RESOURCE_SCREEN: return "Tải xuống dữ liệu";
+        case GAME_GUIDE: return "Xem hướng dẫn";
+        case GAME_BUG_REPORT: return "Báo lỗi";
+        case GAME_SURVEY: return "Khảo sát";
+
+        case RIGHT_SIDE_TITLE: return "Cộng đồng";
+        case COMMON_URL_NOT_FOUND: return "Không tìm thấy đường dẫn";
       }
     }
     else if (lang == Language.JAPANESE) {
       switch(txt) {
         case LEFT_SIDE_TITLE: return "アプリケーション";
-        case OPEN_GAME_TITLE_NOT_READY: return "ゲームデータ未完成";
-        case OPEN_GAME_TITLE_READY: return "ゲーム！！！";
-        case OPEN_GAME_START: return "スタート";
-        case OPEN_GAME_CONTINUE: return "つづき";
-        case OPEN_GAME_GOTO_RESOURCE_SCREEN: return "ゲームデータダウンロード";
+        case GAME_TITLE_NOT_READY: return "ゲームデータ未完成";
+        case GAME_TITLE_READY: return "ゲーム！！！";
+        case GAME_START: return "スタート";
+        case GAME_CONTINUE: return "つづき";
+        case GAME_GOTO_RESOURCE_SCREEN: return "ゲームデータダウンロード";
+        case GAME_GUIDE: return "説明を見る";
+        case GAME_BUG_REPORT: return "エラー報告";
+        case GAME_SURVEY: return "アンケート";
+
+        case RIGHT_SIDE_TITLE: return "コミュニティ";
+        case COMMON_URL_NOT_FOUND: return "リンクが見つかりません";
       }
     }
     return "";
@@ -87,59 +102,108 @@ class _InitWidgetState extends State<InitWidget> {
     });
   }
 
-  final Widget _normalStar= Image.asset("assets/app/image/stage_splash/star.png",
-    height: GameConstant.SPLASH_DEFAULT_TEXT_STYLE.fontSize,);
-  final Widget _transparentStar= Image.asset("assets/app/image/stage_splash/star.png",
-    color: Colors.transparent, height: GameConstant.SPLASH_DEFAULT_TEXT_STYLE.fontSize,);
-  final BoxDecoration _greenBtnDecoration= const BoxDecoration(
-    image: const DecorationImage(
-      image: const AssetImage('assets/app/image/stage_splash/btn_bg_green.png'),
-      fit: BoxFit.fill,
-    ),
+  final TextStyle _defaultTextStyle = TextStyle(
+    fontFamily: "Linotte",
+    fontSize: 23,
+    decoration: TextDecoration.none,
+    decorationStyle: TextDecorationStyle.solid,
+    decorationColor: Colors.white,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+    shadows: [
+      Shadow( // bottomLeft
+          offset: Offset(-1, -1),
+          color: Colors.black
+      ),
+      Shadow( // bottomRight
+          offset: Offset(1, -1),
+          color: Colors.black
+      ),
+      Shadow( // topRight
+          offset: Offset(1, 1),
+          color: Colors.black
+      ),
+      Shadow( // topLeft
+          offset: Offset(-1, 1),
+          color: Colors.black
+      ),
+    ],
   );
-  final BoxDecoration _greyBtnDecoration= const BoxDecoration(
-    image: const DecorationImage(
-      image: const AssetImage('assets/app/image/stage_splash/btn_bg_grey.png'),
-      fit: BoxFit.fill,
-    ),
-  );
+
   final BoxDecoration _headerBoxDecoration= BoxDecoration(
     gradient: LinearGradient(
       colors: [const Color(0xFF00CCFF), const Color(0xFF3366FF),],
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,),
   );
+
   final BoxDecoration _headerBoxDecorationGrey= BoxDecoration(
     gradient: LinearGradient(
       colors: [const Color(0xFFD2D1D3), const Color(0xFF918997),],
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,),
   );
-  final ButtonStyle _openGameBtnStyle= TextButton.styleFrom(
-    padding: EdgeInsets.all(3),
-    primary: Colors.white,
-    textStyle: GameConstant.SPLASH_DEFAULT_TEXT_STYLE,
-  );
+
+  Widget _getCommunityChild(String iconName, String txt, String queryJsonPath){
+    String iconPath= AssetConstant.APP_IMAGE_COMMUNITY_DIR+ iconName;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          dynamic commonInfoJsonObj= HttpHelper.queryCommonInfo();
+          if(null== commonInfoJsonObj){
+            final snackBar = SnackBar(content: Text(_SText.get(_SText.COMMON_URL_NOT_FOUND)));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            return;
+          }
+          UrlLauncher.launch(commonInfoJsonObj[queryJsonPath] as String);
+        },
+        child: Container(
+          padding: const EdgeInsets.all(1),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AspectRatio(
+                  aspectRatio: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image(
+                      image: AssetImage(iconPath),
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+              ),
+              Text(txt, style: _defaultTextStyle.copyWith(fontSize: 14),),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    ButtonStyle _normalBtnStyle= ElevatedButton.styleFrom(
+      padding: EdgeInsets.all(5),
+      primary: Colors.redAccent,
+      textStyle: _defaultTextStyle,
+    );
     return Scaffold(
       body: Row(children: [
         Expanded(flex: 2, child: Card(
           shadowColor: Colors.greenAccent,
           elevation: 7,
           color: Colors.white70,
-          margin: const EdgeInsets.all(8),
+          margin: const EdgeInsets.all(5),
           child: Stack(
             children: [
               DefaultTextStyle.merge(
-                style: GameConstant.SPLASH_DEFAULT_TEXT_STYLE,
+                style: _defaultTextStyle,
                 child: Container(
-                  padding: EdgeInsets.only(top: 12),
+                  padding: const EdgeInsets.only(top: 12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(child: Text(_SPText.get(_SPText.LEFT_SIDE_TITLE))),
+                      Center(child: Text(_SText.get(_SText.LEFT_SIDE_TITLE))),
                       Container(
                         decoration: _headerBoxDecoration,
                         child: Container(
@@ -161,6 +225,8 @@ class _InitWidgetState extends State<InitWidget> {
                           child: GestureDetector(
                             onTap: () {
                               UserConfig.save(UserConfig.MENU_LANGUAGE, Language.VIETNAMESE);
+                              UserConfig.saveBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE, false);
+                              UserConfig.saveBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE, true);
                               setState(() {});
                             },
                             child: Image(
@@ -180,6 +246,8 @@ class _InitWidgetState extends State<InitWidget> {
                           child: GestureDetector(
                             onTap: () {
                               UserConfig.save(UserConfig.MENU_LANGUAGE, Language.JAPANESE);
+                              UserConfig.saveBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE, true);
+                              UserConfig.saveBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE, false);
                               setState(() {});
                             },
                             child: Image(
@@ -195,8 +263,8 @@ class _InitWidgetState extends State<InitWidget> {
                           padding: EdgeInsets.all(3),
                           width: double.infinity,
                           child: Text(_isGameResourceReady
-                              ? _SPText.get(_SPText.OPEN_GAME_TITLE_READY)
-                              : _SPText.get(_SPText.OPEN_GAME_TITLE_NOT_READY)),
+                              ? _SText.get(_SText.GAME_TITLE_READY)
+                              : _SText.get(_SText.GAME_TITLE_NOT_READY)),
                         ),
                       ),
                       Row(children: [
@@ -209,8 +277,9 @@ class _InitWidgetState extends State<InitWidget> {
                               _checkResourceInternal();
                             });
                           },
-                          style: _openGameBtnStyle,
-                          child: Text(_SPText.get(_SPText.OPEN_GAME_GOTO_RESOURCE_SCREEN)),
+                          style: _normalBtnStyle.copyWith(
+                              backgroundColor: MaterialStateProperty.all(Colors.green)),
+                          child: Text(_SText.get(_SText.GAME_GOTO_RESOURCE_SCREEN)),
                         ),
                         if(_isGameResourceReady) SizedBox(width: 5,),
                         if(_isGameResourceReady) ElevatedButton(
@@ -224,12 +293,13 @@ class _InitWidgetState extends State<InitWidget> {
                               _checkResourceInternal();
                             });
                           },
-                          style: _openGameBtnStyle,
-                          child: Text(_SPText.get(_SPText.OPEN_GAME_START)),
+                          style: _normalBtnStyle,
+                          child: Text(_SText.get(_SText.GAME_START)),
                         ),
                         if(_isGameResourceReady) SizedBox(width: 5,),
                         if(_isGameResourceReady) ElevatedButton(
-                          onPressed: SavesInfo.haveCurrentData() ? (){
+                          onPressed: (){
+                            if(!SavesInfo.haveCurrentData()){return;}
                             Navigator.push(context,
                               MaterialPageRoute(builder: (context) => MyApp(
                                 command: StartAppCommand.LOAD_LAST_SAVE,
@@ -237,9 +307,53 @@ class _InitWidgetState extends State<InitWidget> {
                             ).whenComplete(() {
                               _checkResourceInternal();
                             });
-                          } : null,
-                          style: _openGameBtnStyle,
-                          child: Text(_SPText.get(_SPText.OPEN_GAME_CONTINUE)),
+                          },
+                          style: SavesInfo.haveCurrentData()
+                              ? _normalBtnStyle
+                              : _normalBtnStyle.copyWith(backgroundColor:
+                                MaterialStateProperty.all(Colors.grey)),
+                          child: Text(_SText.get(_SText.GAME_CONTINUE)),
+                        ),
+                      ],),
+                      Row(children: [
+                        SizedBox(width: 5,),
+                        ElevatedButton(
+                          onPressed: (){
+
+                          },
+                          style: _normalBtnStyle.copyWith(
+                              backgroundColor: MaterialStateProperty.all(Colors.blueAccent)),
+                          child: Text(_SText.get(_SText.GAME_GUIDE)),
+                        ),
+                        SizedBox(width: 5,),
+                        ElevatedButton(
+                          onPressed: (){
+                            dynamic gameInfoJsonObj= HttpHelper.queryGameInfo();
+                            if(null== gameInfoJsonObj){
+                              final snackBar = SnackBar(content: Text(_SText.get(_SText.COMMON_URL_NOT_FOUND)));
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              return;
+                            }
+                            UrlLauncher.launch(gameInfoJsonObj["bug_report_url"] as String);
+                          },
+                          style: _normalBtnStyle.copyWith(
+                              backgroundColor: MaterialStateProperty.all(Color(0xFFBF360C))),
+                          child: Text(_SText.get(_SText.GAME_BUG_REPORT)),
+                        ),
+                        SizedBox(width: 5,),
+                        ElevatedButton(
+                          onPressed: (){
+                            dynamic gameInfoJsonObj= HttpHelper.queryGameInfo();
+                            if(null== gameInfoJsonObj){
+                              final snackBar = SnackBar(content: Text(_SText.get(_SText.COMMON_URL_NOT_FOUND)));
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              return;
+                            }
+                            UrlLauncher.launch(gameInfoJsonObj["survey_url"] as String);
+                          },
+                          style: _normalBtnStyle.copyWith(
+                              backgroundColor: MaterialStateProperty.all(Colors.blueAccent)),
+                          child: Text(_SText.get(_SText.GAME_SURVEY)),
                         ),
                       ],),
                     ],
@@ -250,7 +364,36 @@ class _InitWidgetState extends State<InitWidget> {
             ],
           ),
         )),
-        Expanded(child: Container()),
+        Expanded(child: Card(
+          shadowColor: Colors.pinkAccent,
+          elevation: 7,
+          color: Colors.white70,
+          margin: const EdgeInsets.all(5),
+          child: DefaultTextStyle.merge(
+            style: _defaultTextStyle,
+            child: Container(
+                padding: const EdgeInsets.only(top: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(child: Text(_SText.get(_SText.RIGHT_SIDE_TITLE))),
+                    Expanded(child: ListView(
+                      children: [
+                        Row(children: [
+                          _getCommunityChild("website.png", "Website", "website_hoshi"),
+                          _getCommunityChild("discord.png", "Discord", "discord_hoshi"),
+                        ],),
+                        Row(children: [
+                          _getCommunityChild("facebook.png", "Fanpage", "hoshi_fb_fanpage"),
+                          _getCommunityChild("group.png", "FB group", "visul_novel_group_fb"),
+                        ],),
+                      ],
+                    )),
+                  ],
+                )
+            ),
+          ),
+        )),
       ],),
     );
   }

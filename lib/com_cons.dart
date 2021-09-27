@@ -143,34 +143,6 @@ class GameConstant {
 
   static const Alignment GAME_SCENE_ALIGNMENT = Alignment.topCenter;
 
-  static const TextStyle SPLASH_DEFAULT_TEXT_STYLE = TextStyle(
-    fontFamily: "Linotte",
-    fontSize: 23,
-    decoration: TextDecoration.none,
-    decorationStyle: TextDecorationStyle.solid,
-    decorationColor: Colors.white,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-    shadows: [
-      Shadow( // bottomLeft
-          offset: Offset(-1, -1),
-          color: Colors.black
-      ),
-      Shadow( // bottomRight
-          offset: Offset(1, -1),
-          color: Colors.black
-      ),
-      Shadow( // topRight
-          offset: Offset(1, 1),
-          color: Colors.black
-      ),
-      Shadow( // topLeft
-          offset: Offset(-1, 1),
-          color: Colors.black
-      ),
-    ],
-  );
-
   static const TextStyle SPLASH_COMMUNITY_TEXT_STYLE = TextStyle(
     fontFamily: "Linotte",
     fontSize: 18,

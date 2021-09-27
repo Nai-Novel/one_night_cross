@@ -3260,6 +3260,7 @@ class _MenuContainerState extends State<MenuContainer> {
   Widget? _triggeringWidget;
   GlobalKey _triggeringWidgetKey= GlobalKey();
   String _triggeringText= "";
+  bool _didNotifyMenu= false;
 
   void _switchTriggerWidget(String? triggerText){
     if(AudioHelper.isVoicePlaying()){
@@ -3354,6 +3355,13 @@ class _MenuContainerState extends State<MenuContainer> {
 
   @override
   Widget build(BuildContext context) {
+    if(!_didNotifyMenu){
+      Future.delayed(Duration(milliseconds: 2000)).whenComplete(() {
+        setState(() {
+          _didNotifyMenu= true;
+        });
+      });
+    }
     Widget triggerWidgetBound= Expanded(
       flex: 4,
       child: IgnorePointer(
@@ -3365,6 +3373,46 @@ class _MenuContainerState extends State<MenuContainer> {
       ),
     );
     //duration: const Duration(milliseconds: GameConstant.GAME_MENU_SWITCH_TIME),
+    Widget notifyMenu= _didNotifyMenu ? Stack(
+      key: GlobalKey(),
+      children: [
+        IgnorePointer(
+          ignoring: true,
+          child: Container(color: Colors.transparent,),
+        ),
+        Align(
+          alignment:
+          UserConfig.getAlign(UserConfig.MENU_ALIGNMENT)== Alignment.topRight
+            ? Alignment.topRight : Alignment.topLeft,
+          child: SizedBox(
+            width: 60,
+            height: 120,
+            child: GestureDetector(
+              onTap: () => displayMenu(),
+              child: Container(color: Colors.transparent,),
+            ),
+          ),
+        ),
+      ],
+    ) : Stack(
+      key: GlobalKey(),
+      children: [
+        Container(color: Colors.transparent,),
+        Align(
+          alignment:
+          UserConfig.getAlign(UserConfig.MENU_ALIGNMENT)== Alignment.topRight
+              ? Alignment.topRight : Alignment.topLeft,
+          child: SizedBox(
+            width: 60,
+            height: 120,
+            child: Container(
+              color: Colors.blueGrey,
+              child: Center(child: Icon(Icons.menu),),
+            ),
+          ),
+        ),
+      ],
+    );
     return Stack(
       children: [
         if(_triggeringText.length== 0 && _menuOpacity== 1) GestureDetector(
@@ -3378,10 +3426,7 @@ class _MenuContainerState extends State<MenuContainer> {
                 flex: 1,
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: GameConstant.GAME_MENU_SWITCH_TIME),
-                  child: _menuOpacity== 0 ? GestureDetector(
-                    onTap: () => displayMenu(),
-                    child: Container(color: Colors.transparent),
-                  ) : Container(
+                  child: _menuOpacity== 0 ? notifyMenu : Container(
                     decoration: BoxDecoration(
                       color: Colors.black45,
                     ),

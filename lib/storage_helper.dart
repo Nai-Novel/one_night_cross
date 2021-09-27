@@ -46,7 +46,7 @@ class StorageHelper{
     await Hive.openBox<String>(UserConfig.TABLE_USER_CONFIG);
     UserConfig._init();
     await Hive.openBox<String>(GlobalVariable.TABLE_NAME);
-    if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length== 0 && APP_DIRECTORY_ON_DEVICE.length== 1){
+    if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length== 0){// && APP_DIRECTORY_ON_DEVICE.length== 1
       UserConfig.save(UserConfig.GAME_ASSETS_FOLDER, APP_DIRECTORY_ON_DEVICE[0].path);
     }
     GameText.loadByLanguage(UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE)
@@ -87,6 +87,7 @@ class UserConfig{
   static const String TABLE_USER_CONFIG = "user_config";
 
   static const String GAME_INFO_JSON = "GAME_INFO_JSON";
+  static const String COMMON_ONLINE_INFO_JSON = "COMMON_ONLINE_INFO_JSON";
   static const String GAME_ASSETS_FOLDER = "GAME_ASSETS_FOLDER";
   static const String MENU_ALIGNMENT = "MENU_ALIGNMENT";
   static const String TEXT_BOX_BACKGROUND_OPACITY = "TEXT_BOX_BACKGROUND_OPACITY";
@@ -114,6 +115,7 @@ class UserConfig{
     Box<String> userConfigBox= Hive.box<String>(TABLE_USER_CONFIG);
     if(userConfigBox.isNotEmpty){return;}
     await userConfigBox.put(GAME_INFO_JSON, "");
+    await userConfigBox.put(COMMON_ONLINE_INFO_JSON, "");
     await userConfigBox.put(GAME_ASSETS_FOLDER, "");
     await userConfigBox.put(MENU_ALIGNMENT, Alignment.topLeft.toString());
     await userConfigBox.put(TEXT_BOX_BACKGROUND_OPACITY, (1).toString());
@@ -716,6 +718,7 @@ class AssetConstant {
 
   static const String APP_ROOT_DIR = "assets/app/";
   static const String APP_IMAGE_DIR = APP_ROOT_DIR + "image/";
+  static const String APP_IMAGE_COMMUNITY_DIR = APP_IMAGE_DIR + "community/";
   static const String APP_GIF_DIR = APP_IMAGE_DIR + "gif/";
   static const String APP_TEXT_BOX_ARROW_UP_GIF = APP_GIF_DIR + "game_text_box_arrow_up_animate.gif";
   static const String APP_TEXT_BOX_ARROW_UP = APP_IMAGE_DIR + "game_text_box_arrow_up.png";
