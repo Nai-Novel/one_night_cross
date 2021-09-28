@@ -13,7 +13,7 @@ import 'text_processor.dart';
 class WidgetHelper{
   static Widget getMenuButton(String txt, bool flag, Function() onPress) {
     return ElevatedButton(
-      child: Text(txt),
+      child: Text(GameText.get(txt)),
       style: ElevatedButton.styleFrom(
         primary: Colors.white,
         onPrimary: flag ? Colors.orangeAccent : Colors.blueGrey,
@@ -664,7 +664,7 @@ class _ConfigWidgetState extends State<ConfigWidget> {
           children: [
             Align(
               alignment: Alignment.centerLeft,
-              child: TextProcessor.simpleRichText(configLabel),
+              child: TextProcessor.simpleRichText(GameText.get(configLabel)),
             ),
             childWidget,
           ],
@@ -684,7 +684,6 @@ class _ConfigWidgetState extends State<ConfigWidget> {
                     value: UserConfig.get(UserConfig.MENU_LANGUAGE)== Language.VIETNAMESE,
                     onChanged: (isEnable){
                       UserConfig.save(UserConfig.MENU_LANGUAGE, isEnable ? Language.VIETNAMESE : Language.JAPANESE);
-                      GameText.loadMenuByLanguage(UserConfig.get(UserConfig.MENU_LANGUAGE));
                       setState(() {});
                     }
                 ),
@@ -1094,7 +1093,7 @@ class _ConfigWidgetState extends State<ConfigWidget> {
                       padding: const EdgeInsets.only(left: 10, right: 10),
                       child: Center(
                         child: RichText(
-                          text: TextSpan(children: TextProcessor.buildSpanFromString(tabName))
+                          text: TextSpan(children: TextProcessor.buildSpanFromString(GameText.get(tabName)))
                         ),
                       ),
                     ),
@@ -1235,14 +1234,14 @@ class _QuickMenuState extends State<QuickMenu> {
 
   Widget _getItemCard(final String label){
     return Card(
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(3))),
       color: _activeLabel== label ? Colors.blueAccent : Color(0xFF383737),
       margin: const EdgeInsets.all(3),
       child: Center(
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            children: TextProcessor.buildSpanFromString(label),
+            children: TextProcessor.buildSpanFromString(GameText.get(label)),
           ),
         ),
       ),
@@ -1376,7 +1375,7 @@ class _GameTextMenuState extends State<GameTextMenu> {
           child: RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              children: TextProcessor.buildSpanFromString(label),
+              children: TextProcessor.buildSpanFromString(GameText.get(label)),
             ),
           ),
         ),

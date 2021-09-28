@@ -366,7 +366,7 @@ class ScriptRunner {
       if(ScriptCommand.CHOICE_HEADER== commandInfo.header
           && commandInfo.containKey(ScriptCommand.CHOICE_END)){
         anItem.setType(GameSingleSaveType.CHOICE);
-        anItem.addText(GameText.BACK_LOG_CHOICE);
+        anItem.addText(GameText.get(GameText.BACK_LOG_CHOICE));
         endOneBlock= true;
         continue;
       }

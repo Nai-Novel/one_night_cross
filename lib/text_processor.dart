@@ -212,285 +212,188 @@ class Language{
 }
 
 class GameText{
-  static String GAME_RESOURCE_SCREEN_CURRENT_STATE_READY= "";
-  static String GAME_RESOURCE_SCREEN_CURRENT_STATE_NOT_READY= "";
+  static const String MENU_CLOSE_MENU= "MENU_CLOSE_MENU";
+  static const String MENU_TRIGGER_AUTO= "MENU_TRIGGER_AUTO";
+  static const String MENU_TRIGGER_SKIP_READ= "MENU_TRIGGER_SKIP_READ";
+  static const String MENU_TRIGGER_SKIP_ALL= "MENU_TRIGGER_SKIP_ALL";
+  static const String MENU_SAVE_AND_LOAD= "MENU_SAVE_AND_LOAD";
+  static const String MENU_QUICK_SAVE= "MENU_QUICK_SAVE";
+  static const String MENU_QUICK_LOAD= "MENU_QUICK_LOAD";
+  static const String MENU_BACK_LOG= "MENU_BACK_LOG";
+  static const String MENU_CONFIG= "MENU_CONFIG";
+  static const String MENU_HIDE_TEXT_BOX= "MENU_HIDE_TEXT_BOX";
+  static const String MENU_EXIT_TO_TITLE= "MENU_EXIT_TO_TITLE";
+  static const String MENU_QUIT= "MENU_QUIT";
 
-  static String SPLASH_CHOOSE_STORAGE_LABEL= "";
-  static String SPLASH_STORAGE_LABEL_CHOSEN= "";
-  static String SPLASH_CHOOSE_STORAGE_EXPLAIN= "";
-  static String SPLASH_CHOOSE_STORAGE_INTERNAL_STORAGE= "";
-  static String SPLASH_CHOOSE_STORAGE_EXTERNAL_STORAGE= "";
-  static String SPLASH_GAME_RESOURCE= "";
-  static String SPLASH_GAME_RESOURCE_READY= "";
-  static String SPLASH_GAME_RESOURCE_NOT_READY= "";
-  static String SPLASH_GAME_RESOURCE_DOWNLOADING= "";
-  static String SPLASH_GAME_RESOURCE_EXTRACTING= "";
-  static String SPLASH_GAME_RESOURCE_AUTO_DOWNLOAD= "";
-  static String SPLASH_GAME_RESOURCE_MANUAL_DOWNLOAD= "";
-  static String SPLASH_GAME_BUG_REPORT= "";
-  static String SPLASH_GAME_USER_GUIDE= "";
-  static String SPLASH_GAME_READY_START= "";
-  static String SPLASH_GAME_READY_LOAD_LAST_SAVE= "";
-  static String SPLASH_COMMUNITY= "";
-  static String SPLASH_COMMUNITY_DISCORD= "Discord";
-  static String SPLASH_COMMUNITY_FACEBOOK_GROUP= "Group";
-  static String SPLASH_COMMUNITY_FACEBOOK_FANPAGE= "Fanpage";
-  static String SPLASH_COMMUNITY_WEBSITE= "Website";
-  static String SPLASH_HELP_US= "";
-  static String SPLASH_HELP_US_SURVEY= "";
-  static String SPLASH_HELP_US_DONATE= "";
+  static const String QUICK_MENU_CANCEL= "QUICK_MENU_CANCEL";
 
-  static String MENU_CLOSE_MENU= "";
-  static String MENU_TRIGGER_AUTO= "";
-  static String MENU_TRIGGER_SKIP_READ= "";
-  static String MENU_TRIGGER_SKIP_ALL= "";
-  static String MENU_SAVE_AND_LOAD= "";
-  static String MENU_QUICK_SAVE= "";
-  static String MENU_QUICK_LOAD= "";
-  static String MENU_BACK_LOG= "";
-  static String MENU_CONFIG= "";
-  static String MENU_HIDE_TEXT_BOX= "";
-  static String MENU_EXIT_TO_TITLE= "";
-  static String MENU_QUIT= "";
+  static const String TEXT_MENU_MAIN_LANGUAGE= "TEXT_MENU_MAIN_LANGUAGE";
+  static const String TEXT_MENU_SUB_LANGUAGE= "TEXT_MENU_SUB_LANGUAGE";
+  static const String TEXT_MENU_HIRAGANA= "TEXT_MENU_HIRAGANA";
+  static const String TEXT_MENU_PLAY_VOICE= "TEXT_MENU_PLAY_VOICE";
 
-  static String QUICK_MENU_CANCEL= "";
+  static const String CONFIG_TAB_GENERAL= "CONFIG_TAB_GENERAL";
+  static const String CONFIG_TAB_GENERAL_MENU_LANGUAGE= "CONFIG_TAB_GENERAL_MENU_LANGUAGE";
+  static const String CONFIG_TAB_GENERAL_KEEP_AUTO_MODE= "CONFIG_TAB_GENERAL_KEEP_AUTO_MODE";
+  static const String CONFIG_TAB_SOUND= "CONFIG_TAB_SOUND";
+  static const String CONFIG_TAB_SOUND_VOLUME_MASTER= "CONFIG_TAB_SOUND_VOLUME_MASTER";
+  static const String CONFIG_TAB_SOUND_VOLUME_BG= "CONFIG_TAB_SOUND_VOLUME_BG";
+  static const String CONFIG_TAB_SOUND_VOLUME_SE= "CONFIG_TAB_SOUND_VOLUME_SE";
+  static const String CONFIG_TAB_SOUND_VOLUME_VOICE= "CONFIG_TAB_SOUND_VOLUME_VOICE";
+  static const String CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT= "CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT";
+  static const String CONFIG_TAB_TEXT= "CONFIG_TAB_TEXT";
+  static const String CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY= "CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY";
+  static const String CONFIG_TAB_TEXT_TEXT_SIZE= "CONFIG_TAB_TEXT_TEXT_SIZE";
+  static const String CONFIG_TAB_TEXT_TEXT_SPEED= "CONFIG_TAB_TEXT_TEXT_SPEED";
+  static const String CONFIG_TAB_TEXT_AUTO_WAIT_TIME= "CONFIG_TAB_TEXT_AUTO_WAIT_TIME";
+  static const String CONFIG_TAB_TEXT_LANGUAGE= "Display language";
+  static const String CONFIG_TAB_TEXT_SAMPLE_DISPLAY= "CONFIG_TAB_TEXT_SAMPLE_DISPLAY";
+  static const String CONFIG_TAB_TEXT_SAMPLE_TEXT1= "CONFIG_TAB_TEXT_SAMPLE_TEXT1";
+  static const String CONFIG_TAB_TEXT_SAMPLE_TEXT2= "CONFIG_TAB_TEXT_SAMPLE_TEXT2";
+  static const String CONFIG_TAB_CHARACTER= "CONFIG_TAB_CHARACTER";
+  static const String CONFIG_TAB_CHARACTER_LIP_SYNC= "CONFIG_TAB_CHARACTER_LIP_SYNC";
 
-  static String TEXT_MENU_MAIN_LANGUAGE= "";
-  static String TEXT_MENU_SUB_LANGUAGE= "";
-  static String TEXT_MENU_HIRAGANA= "";
-  static String TEXT_MENU_PLAY_VOICE= "";
+  static const String BACK_LOG_CHOICE= "BACK_LOG_CHOICE";
 
-  static String CONFIG_TAB_GENERAL= "";
-  static String CONFIG_TAB_GENERAL_MENU_LANGUAGE= "Menu language";
-  static String CONFIG_TAB_GENERAL_KEEP_AUTO_MODE= "";
-  static String CONFIG_TAB_SOUND= "";
-  static String CONFIG_TAB_SOUND_VOLUME_MASTER= "";
-  static String CONFIG_TAB_SOUND_VOLUME_BG= "";
-  static String CONFIG_TAB_SOUND_VOLUME_SE= "";
-  static String CONFIG_TAB_SOUND_VOLUME_VOICE= "";
-  static String CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT= "";
-  static String CONFIG_TAB_TEXT= "";
-  static String CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY= "";
-  static String CONFIG_TAB_TEXT_TEXT_SIZE= "";
-  static String CONFIG_TAB_TEXT_TEXT_SPEED= "";
-  static String CONFIG_TAB_TEXT_AUTO_WAIT_TIME= "";
-  static String CONFIG_TAB_TEXT_LANGUAGE= "Display language";
-  static String CONFIG_TAB_TEXT_SAMPLE_DISPLAY= "";
-  static String CONFIG_TAB_TEXT_SAMPLE_TEXT1= "";
-  static String CONFIG_TAB_TEXT_SAMPLE_TEXT2= "";
-  static String CONFIG_TAB_CHARACTER= "";
-  static String CONFIG_TAB_CHARACTER_LIP_SYNC= "Lip sync";
+  static const String WARNING_GAME_STILL_RUNNING= "WARNING_GAME_STILL_RUNNING";
 
-  static String BACK_LOG_CHOICE= "";
-
-  static String WARNING_GAME_STILL_RUNNING= "";
-
-  static void loadByLanguage(String lang){
-    if(lang== Language.VIETNAMESE){
-      BACK_LOG_CHOICE = "Lựa chọn";
-
-      WARNING_GAME_STILL_RUNNING = "Trò chơi vẫn đang trong quá trình chạy";
-    }else if(lang== Language.ENGLISH){
-      BACK_LOG_CHOICE = "Choice";
-
-      WARNING_GAME_STILL_RUNNING = "Game is still running";
-    }else if(lang== Language.JAPANESE){
-      BACK_LOG_CHOICE = "選択";
-
-      WARNING_GAME_STILL_RUNNING = "ゲームはまだ実行中です。";
+  static String get(String txt) {
+    String lang= UserConfig.get(UserConfig.MENU_LANGUAGE);
+    switch(txt){
+      case CONFIG_TAB_CHARACTER_LIP_SYNC: return "Lip sync";
+      case CONFIG_TAB_GENERAL_MENU_LANGUAGE: return "Menu language";
     }
+    if (lang == Language.VIETNAMESE) {
+      switch(txt) {
+        case BACK_LOG_CHOICE: return "Lựa chọn";
+        case WARNING_GAME_STILL_RUNNING: return "Trò chơi vẫn đang trong quá trình chạy!";
 
-  }
+        case MENU_CLOSE_MENU: return "Đóng";
+        case MENU_TRIGGER_AUTO: return "Tự động đọc";
+        case MENU_TRIGGER_SKIP_READ: return "Bỏ qua đã đọc";
+        case MENU_TRIGGER_SKIP_ALL: return "Bỏ qua toàn bộ";
+        case MENU_SAVE_AND_LOAD: return "Lưu / Tải";
+        case MENU_QUICK_SAVE: return "Lưu nhanh";
+        case MENU_QUICK_LOAD: return "Tải nhanh";
+        case MENU_BACK_LOG: return "Lược sử";
+        case MENU_CONFIG: return "Tuỳ chỉnh";
+        case MENU_HIDE_TEXT_BOX: return "Ẩn khung thoại";
+        case MENU_EXIT_TO_TITLE: return "Về tiêu đề";
+        case MENU_QUIT: return "Thoát";
 
-  static void loadMenuByLanguage(String lang){
-    if(lang== Language.VIETNAMESE){
-      GAME_RESOURCE_SCREEN_CURRENT_STATE_READY = "Đã sẵn sàng!";
-      GAME_RESOURCE_SCREEN_CURRENT_STATE_NOT_READY = "Chưa đầy đủ!";
+        case QUICK_MENU_CANCEL: return "Huỷ";
 
-      SPLASH_CHOOSE_STORAGE_LABEL = "Chọn vùng nhớ: ";
-      SPLASH_STORAGE_LABEL_CHOSEN = "Vùng nhớ: ";
-      SPLASH_CHOOSE_STORAGE_INTERNAL_STORAGE= "Bộ nhớ trong";
-      SPLASH_CHOOSE_STORAGE_EXTERNAL_STORAGE= "Thẻ nhớ";
-      SPLASH_CHOOSE_STORAGE_EXPLAIN = "Chọn lấy vùng nhớ sẽ lưu trữ dữ liệu game, dữ liệu nặng khoảng 800Mb nhưng sẽ cần tới 1Gb để thực hiện thêm cả thao tác giải nén.";
-      SPLASH_GAME_RESOURCE_READY= "GAME!!!";
-      SPLASH_GAME_RESOURCE_NOT_READY= "Dữ liệu game chưa sẵn sàng";
-      SPLASH_GAME_RESOURCE= "Cài đặt dữ liệu game";
-      SPLASH_GAME_RESOURCE_DOWNLOADING= "Đang tải xuống";
-      SPLASH_GAME_RESOURCE_EXTRACTING= "Đang giải nén";
-      SPLASH_GAME_RESOURCE_AUTO_DOWNLOAD= "Tự động";
-      SPLASH_GAME_RESOURCE_MANUAL_DOWNLOAD= "Thủ công";
-      SPLASH_GAME_BUG_REPORT= "Báo lỗi";
-      SPLASH_GAME_USER_GUIDE= "Hướng dẫn";
-      SPLASH_GAME_READY_START= "Bắt đầu";
-      SPLASH_GAME_READY_LOAD_LAST_SAVE= "Đọc tiếp";
-      SPLASH_COMMUNITY= "Cộng đồng";
-      SPLASH_HELP_US= "Giúp chúng mình";
-      SPLASH_HELP_US_SURVEY= "Khảo sát";
-      SPLASH_HELP_US_DONATE= "Quyên góp";
+        case TEXT_MENU_MAIN_LANGUAGE: return "Ngôn ngữ chính";
+        case TEXT_MENU_SUB_LANGUAGE: return "Ngôn ngữ phụ";
+        case TEXT_MENU_HIRAGANA: return "Hiragana";
+        case TEXT_MENU_PLAY_VOICE: return "Đọc lời thoại";
 
-      MENU_CLOSE_MENU = "Đóng";
-      MENU_TRIGGER_AUTO = "Tự động đọc";
-      MENU_TRIGGER_SKIP_READ = "Bỏ qua đã đọc";
-      MENU_TRIGGER_SKIP_ALL = "Bỏ qua toàn bộ";
-      MENU_SAVE_AND_LOAD = "Lưu / Tải";
-      MENU_QUICK_SAVE = "Lưu nhanh";
-      MENU_QUICK_LOAD = "Tải nhanh";
-      MENU_BACK_LOG = "Lược sử";
-      MENU_CONFIG = "Tuỳ chỉnh";
-      MENU_HIDE_TEXT_BOX = "Ẩn khung thoại";
-      MENU_EXIT_TO_TITLE = "Về tiêu đề";
-      MENU_QUIT = "Thoát";
-
-      QUICK_MENU_CANCEL = "Huỷ";
-
-      TEXT_MENU_MAIN_LANGUAGE = "Ngôn ngữ chính";
-      TEXT_MENU_SUB_LANGUAGE = "Ngôn ngữ phụ";
-      TEXT_MENU_HIRAGANA = "Hiragana";
-      TEXT_MENU_PLAY_VOICE = "Đọc lời thoại";
-
-      CONFIG_TAB_GENERAL = "Cơ bản";
-      CONFIG_TAB_GENERAL_KEEP_AUTO_MODE = "Vẫn tự động đọc khi chuyển thoại bằng tay";
-      CONFIG_TAB_SOUND = "Âm thanh";
-      CONFIG_TAB_SOUND_VOLUME_MASTER = "Âm lượng tổng";
-      CONFIG_TAB_SOUND_VOLUME_BG = "Nhạc nền";
-      CONFIG_TAB_SOUND_VOLUME_SE = "Tiếng động";
-      CONFIG_TAB_SOUND_VOLUME_VOICE = "Giọng nói nhân vật";
-      CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT = "Chờ giọng nhân vật kết thúc khi tự động đọc";
-      CONFIG_TAB_TEXT = "Văn bản";
-      CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY = "Độ mờ khung thoại";
-      CONFIG_TAB_TEXT_TEXT_SIZE = "Cỡ chữ";
-      CONFIG_TAB_TEXT_TEXT_SPEED = "Tốc độ văn bản";
-      CONFIG_TAB_TEXT_AUTO_WAIT_TIME = "Thời gian chờ trong chế độ tự động đọc";
-      CONFIG_TAB_TEXT_SAMPLE_DISPLAY = "Kiểu hiển thị của văn bản hiện hành";
-      CONFIG_TAB_TEXT_SAMPLE_TEXT1 = "Tên nhân vật<br>Một đoạn văn bản rất dài dùng để cho bạn thấy với các tuỳ chỉnh hiện tại, văn bản được hiển thị như thế nào.";
-      CONFIG_TAB_TEXT_SAMPLE_TEXT2 = "Vậy nên khi đọc bạn sẽ thấy vô cùng chán nản, mệt mỏi và cuối cùng là... hối tiếc vì đã đọc đống chữ hiển thị thử nghiệm vớ vẩn này.";
-      CONFIG_TAB_CHARACTER = "Nhân vật";
+        case CONFIG_TAB_GENERAL: return "Cơ bản";
+        case CONFIG_TAB_GENERAL_KEEP_AUTO_MODE: return "Vẫn tự động đọc khi chuyển thoại bằng tay";
+        case CONFIG_TAB_SOUND: return "Âm thanh";
+        case CONFIG_TAB_SOUND_VOLUME_MASTER: return "Âm lượng tổng";
+        case CONFIG_TAB_SOUND_VOLUME_BG: return "Nhạc nền";
+        case CONFIG_TAB_SOUND_VOLUME_SE: return "Tiếng động";
+        case CONFIG_TAB_SOUND_VOLUME_VOICE: return "Giọng nói nhân vật";
+        case CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT: return "Chờ giọng nhân vật kết thúc khi tự động đọc";
+        case CONFIG_TAB_TEXT: return "Văn bản";
+        case CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY: return "Độ mờ khung thoại";
+        case CONFIG_TAB_TEXT_TEXT_SIZE: return "Cỡ chữ";
+        case CONFIG_TAB_TEXT_TEXT_SPEED: return "Tốc độ văn bản";
+        case CONFIG_TAB_TEXT_AUTO_WAIT_TIME: return "Thời gian chờ trong chế độ tự động đọc";
+        case CONFIG_TAB_TEXT_SAMPLE_DISPLAY: return "Kiểu hiển thị của văn bản hiện hành";
+        case CONFIG_TAB_TEXT_SAMPLE_TEXT1: return "Tên nhân vật<br>Một đoạn văn bản rất dài dùng để cho bạn thấy với các tuỳ chỉnh hiện tại, văn bản được hiển thị như thế nào.";
+        case CONFIG_TAB_TEXT_SAMPLE_TEXT2: return "Vậy nên khi đọc bạn sẽ thấy vô cùng chán nản, mệt mỏi và cuối cùng là... hối tiếc vì đã đọc đống chữ hiển thị thử nghiệm vớ vẩn này.";
+        case CONFIG_TAB_CHARACTER: return "Nhân vật";
+      }
     }
-    else if(lang== Language.ENGLISH){
-      GAME_RESOURCE_SCREEN_CURRENT_STATE_READY = "All ready!";
-      GAME_RESOURCE_SCREEN_CURRENT_STATE_NOT_READY = "Incomplete!";
+    else if (lang == Language.JAPANESE) {
+      switch(txt) {
+        case BACK_LOG_CHOICE: return "選択";
+        case WARNING_GAME_STILL_RUNNING: return "ゲームはまだ実行中です。";
 
-      SPLASH_CHOOSE_STORAGE_LABEL = "Choose storage: ";
-      SPLASH_STORAGE_LABEL_CHOSEN = "Storage: ";
-      SPLASH_CHOOSE_STORAGE_INTERNAL_STORAGE= "Internal storage";
-      SPLASH_CHOOSE_STORAGE_EXTERNAL_STORAGE= "SD card";
-      SPLASH_CHOOSE_STORAGE_EXPLAIN = "Select the storage will store the game data, data will take about 800Mb, but it will need 1.6Gb to perform additional decompression.";
-      SPLASH_GAME_RESOURCE_READY= "GAME!!!";
-      SPLASH_GAME_RESOURCE_NOT_READY= "Not ready";
-      SPLASH_GAME_RESOURCE= "Install game resource";
-      SPLASH_GAME_RESOURCE_DOWNLOADING= "Downloading";
-      SPLASH_GAME_RESOURCE_EXTRACTING= "Decompressing";
-      SPLASH_GAME_RESOURCE_AUTO_DOWNLOAD= "Auto";
-      SPLASH_GAME_RESOURCE_MANUAL_DOWNLOAD= "Manual";
-      SPLASH_GAME_BUG_REPORT= "Report";
-      SPLASH_GAME_USER_GUIDE= "Guide";
-      SPLASH_GAME_READY_START= "Start game";
-      SPLASH_GAME_READY_LOAD_LAST_SAVE= "Continue";
-      SPLASH_COMMUNITY= "Community";
-      SPLASH_HELP_US= "Help us";
-      SPLASH_HELP_US_SURVEY= "Survey";
-      SPLASH_HELP_US_DONATE= "Donate";
+        case MENU_CLOSE_MENU: return "閉じる";
+        case MENU_TRIGGER_AUTO: return "自動送り";
+        case MENU_TRIGGER_SKIP_READ: return "早送り（既読）";
+        case MENU_TRIGGER_SKIP_ALL: return "早送り（全て）";
+        case MENU_SAVE_AND_LOAD: return "データ保存・読み";
+        case MENU_QUICK_SAVE: return "クイックセーブ";
+        case MENU_QUICK_LOAD: return "クイックロード";
+        case MENU_BACK_LOG: return "文章履歴";
+        case MENU_CONFIG: return "環境設定";
+        case MENU_HIDE_TEXT_BOX: return "テキスト非表示";
+        case MENU_EXIT_TO_TITLE: return "タイトルに戻る";
+        case MENU_QUIT: return "終了";
 
-      MENU_CLOSE_MENU = "Close";
-      MENU_TRIGGER_AUTO = "Auto";
-      MENU_TRIGGER_SKIP_READ = "Skip read";
-      MENU_TRIGGER_SKIP_ALL = "Skip all";
-      MENU_SAVE_AND_LOAD = "Save / load";
-      MENU_QUICK_SAVE = "Quick save";
-      MENU_QUICK_LOAD = "Quick load";
-      MENU_BACK_LOG = "Back log";
-      MENU_CONFIG = "Config";
-      MENU_HIDE_TEXT_BOX = "Hide textbox";
-      MENU_EXIT_TO_TITLE = "Back to title";
-      MENU_QUIT = "Quit";
+        case QUICK_MENU_CANCEL: return "閉じる";
 
-      QUICK_MENU_CANCEL = "Cancel";
+        case TEXT_MENU_MAIN_LANGUAGE: return "主な言語";
+        case TEXT_MENU_SUB_LANGUAGE: return "サブ言語";
+        case TEXT_MENU_HIRAGANA: return "ひらがな";
+        case TEXT_MENU_PLAY_VOICE: return "声を再生";
 
-      TEXT_MENU_MAIN_LANGUAGE = "Main language";
-      TEXT_MENU_SUB_LANGUAGE = "Sub language";
-      TEXT_MENU_HIRAGANA = "Hiragana";
-      TEXT_MENU_PLAY_VOICE = "Play voice";
-
-      CONFIG_TAB_GENERAL = "General";
-      CONFIG_TAB_GENERAL_KEEP_AUTO_MODE = "Keep auto mode when manual read";
-      CONFIG_TAB_SOUND = "Sound";
-      CONFIG_TAB_SOUND_VOLUME_MASTER = "Master volume";
-      CONFIG_TAB_SOUND_VOLUME_BG = "Background music";
-      CONFIG_TAB_SOUND_VOLUME_SE = "Sound effect";
-      CONFIG_TAB_SOUND_VOLUME_VOICE = "Voice";
-      CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT = "Wait character voice complete on auto mode";
-      CONFIG_TAB_TEXT = "Text";
-      CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY = "Message background transparent";
-      CONFIG_TAB_TEXT_TEXT_SIZE = "Message text size";
-      CONFIG_TAB_TEXT_TEXT_SPEED = "Message speed";
-      CONFIG_TAB_TEXT_AUTO_WAIT_TIME = "Auto mode wait time";
-      CONFIG_TAB_TEXT_SAMPLE_DISPLAY = "Sample text";
-      CONFIG_TAB_CHARACTER = "Character";
+        case CONFIG_TAB_GENERAL: return "基本";
+        case CONFIG_TAB_GENERAL_KEEP_AUTO_MODE: return "手動で読むときは自動モードを維持する";
+        case CONFIG_TAB_SOUND: return "音";
+        case CONFIG_TAB_SOUND_VOLUME_MASTER: return "全体音量";
+        case CONFIG_TAB_SOUND_VOLUME_BG: return "BGM音量";
+        case CONFIG_TAB_SOUND_VOLUME_SE: return "効果音量";
+        case CONFIG_TAB_SOUND_VOLUME_VOICE: return "声音量";
+        case CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT: return "オートモードではキャラクターの声が終わるのを待つ";
+        case CONFIG_TAB_TEXT: return "文字";
+        case CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY: return "メッセージウインドウ透明度";
+        case CONFIG_TAB_TEXT_TEXT_SIZE: return "テキスト大きさ";
+        case CONFIG_TAB_TEXT_TEXT_SPEED: return "メッセージ表示速度";
+        case CONFIG_TAB_TEXT_AUTO_WAIT_TIME: return "オートモード速度";
+        case CONFIG_TAB_TEXT_SAMPLE_DISPLAY: return "表示のサンプル";
+        case CONFIG_TAB_TEXT_SAMPLE_TEXT1: return "キャラクター<br>現在の設定でテキストがどのように表示されるかを示すために使用される非常に長いテキスト。";
+        case CONFIG_TAB_TEXT_SAMPLE_TEXT2: return "ですから、あなたがそれを読むとき、つまらないと感じて、疲れて、そして最後に...このたわごとサンプル表示テキストを読んだことを後悔するでしょう。";
+        case CONFIG_TAB_CHARACTER: return "キャラクター";
+      }
     }
-    else if(lang== Language.JAPANESE){
-      GAME_RESOURCE_SCREEN_CURRENT_STATE_READY = "準備完了";
-      GAME_RESOURCE_SCREEN_CURRENT_STATE_NOT_READY = "未完成";
+    else if (lang == Language.ENGLISH) {
+      switch(txt) {
+        case BACK_LOG_CHOICE: return "Choice";
+        case WARNING_GAME_STILL_RUNNING: return "Game is still running!";
 
-      SPLASH_CHOOSE_STORAGE_LABEL = "ストレージ選び：";
-      SPLASH_STORAGE_LABEL_CHOSEN = "ストレージ：";
-      SPLASH_CHOOSE_STORAGE_INTERNAL_STORAGE= "内部ストレージ";
-      SPLASH_CHOOSE_STORAGE_EXTERNAL_STORAGE= "SDカード";
-      SPLASH_CHOOSE_STORAGE_EXPLAIN= "ゲームデータは選んだストレージ保存されます。データの重量は約800Mbですが、追加の解凍を実行するには1.6Gbが必要です。";
-      SPLASH_GAME_RESOURCE_READY= "準備完了";
-      SPLASH_GAME_RESOURCE_NOT_READY= "見つけません";
-      SPLASH_GAME_RESOURCE= "ゲームデータのインストール";
-      SPLASH_GAME_RESOURCE_DOWNLOADING= "ダウンロード";
-      SPLASH_GAME_RESOURCE_EXTRACTING= "解凍";
-      SPLASH_GAME_RESOURCE_AUTO_DOWNLOAD= "自動的に";
-      SPLASH_GAME_RESOURCE_MANUAL_DOWNLOAD= "自分でする";
-      SPLASH_GAME_BUG_REPORT= "故障報告";
-      SPLASH_GAME_USER_GUIDE= "マニュアル";
-      SPLASH_GAME_READY_START= "はじめる";
-      SPLASH_GAME_READY_LOAD_LAST_SAVE= "続ける";
-      SPLASH_COMMUNITY= "コミュニティ";
-      SPLASH_HELP_US= "応援する";
-      SPLASH_HELP_US_SURVEY= "アンケート";
-      SPLASH_HELP_US_DONATE= "寄付";
+        case MENU_CLOSE_MENU: return "Close";
+        case MENU_TRIGGER_AUTO: return "Auto";
+        case MENU_TRIGGER_SKIP_READ: return "Skip read";
+        case MENU_TRIGGER_SKIP_ALL: return "Skip all";
+        case MENU_SAVE_AND_LOAD: return "Save / load";
+        case MENU_QUICK_SAVE: return "Quick save";
+        case MENU_QUICK_LOAD: return "Quick load";
+        case MENU_BACK_LOG: return "Back log";
+        case MENU_CONFIG: return "Config";
+        case MENU_HIDE_TEXT_BOX: return "Hide textbox";
+        case MENU_EXIT_TO_TITLE: return "Back to title";
+        case MENU_QUIT: return "Quit";
 
-      MENU_CLOSE_MENU = "閉じる";
-      MENU_TRIGGER_AUTO = "自動送り";
-      MENU_TRIGGER_SKIP_READ = "早送り（既読）";
-      MENU_TRIGGER_SKIP_ALL = "早送り（全て）";
-      MENU_SAVE_AND_LOAD = "データ保存・読み";
-      MENU_QUICK_SAVE = "クイックセーブ";
-      MENU_QUICK_LOAD = "クイックロード";
-      MENU_BACK_LOG = "文章履歴";
-      MENU_CONFIG = "環境設定";
-      MENU_HIDE_TEXT_BOX = "テキスト非表示";
-      MENU_EXIT_TO_TITLE = "タイトルに戻る";
-      MENU_QUIT = "終了";
+        case QUICK_MENU_CANCEL: return "Cancel";
 
-      QUICK_MENU_CANCEL = "閉じる";
+        case TEXT_MENU_MAIN_LANGUAGE: return "Main language";
+        case TEXT_MENU_SUB_LANGUAGE: return "Sub language";
+        case TEXT_MENU_HIRAGANA: return "Hiragana";
+        case TEXT_MENU_PLAY_VOICE: return "Play voice";
 
-      TEXT_MENU_MAIN_LANGUAGE = "主な言語";
-      TEXT_MENU_SUB_LANGUAGE = "サブ言語";
-      TEXT_MENU_HIRAGANA = "ひらがな";
-      TEXT_MENU_PLAY_VOICE = "声を再生";
-
-      CONFIG_TAB_GENERAL = "基本";
-      CONFIG_TAB_GENERAL_KEEP_AUTO_MODE = "手動で読むときは自動モードを維持する";
-      CONFIG_TAB_SOUND = "音";
-      CONFIG_TAB_SOUND_VOLUME_MASTER = "全体音量";
-      CONFIG_TAB_SOUND_VOLUME_BG = "BGM音量";
-      CONFIG_TAB_SOUND_VOLUME_SE = "効果音量";
-      CONFIG_TAB_SOUND_VOLUME_VOICE = "声音量";
-      CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT = "オートモードではキャラクターの声が終わるのを待つ";
-      CONFIG_TAB_TEXT = "文字";
-      CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY = "メッセージウインドウ透明度";
-      CONFIG_TAB_TEXT_TEXT_SIZE = "テキスト大きさ";
-      CONFIG_TAB_TEXT_TEXT_SPEED = "メッセージ表示速度";
-      CONFIG_TAB_TEXT_AUTO_WAIT_TIME = "オートモード速度";
-      CONFIG_TAB_TEXT_SAMPLE_DISPLAY = "表示のサンプル";
-      CONFIG_TAB_TEXT_SAMPLE_TEXT1 = "キャラクター<br>現在の設定でテキストがどのように表示されるかを示すために使用される非常に長いテキスト。";
-      CONFIG_TAB_TEXT_SAMPLE_TEXT2 = "ですから、あなたがそれを読むとき、つまらないと感じて、疲れて、そして最後に...このたわごとサンプル表示テキストを読んだことを後悔するでしょう。";
-      CONFIG_TAB_CHARACTER = "キャラクター";
+        case CONFIG_TAB_GENERAL: return "General";
+        case CONFIG_TAB_GENERAL_KEEP_AUTO_MODE: return "Keep auto mode when manual read";
+        case CONFIG_TAB_SOUND: return "Sound";
+        case CONFIG_TAB_SOUND_VOLUME_MASTER: return "Master volume";
+        case CONFIG_TAB_SOUND_VOLUME_BG: return "Background music";
+        case CONFIG_TAB_SOUND_VOLUME_SE: return "Sound effect";
+        case CONFIG_TAB_SOUND_VOLUME_VOICE: return "Voice";
+        case CONFIG_TAB_SOUND_VOICE_DONE_IS_WAIT: return "Wait character voice complete on auto mode";
+        case CONFIG_TAB_TEXT: return "Text";
+        case CONFIG_TAB_TEXT_TEXTBOX_BG_OPACITY: return "Message background transparent";
+        case CONFIG_TAB_TEXT_TEXT_SIZE: return "Message text size";
+        case CONFIG_TAB_TEXT_TEXT_SPEED: return "Message speed";
+        case CONFIG_TAB_TEXT_AUTO_WAIT_TIME: return "Auto mode wait time";
+        case CONFIG_TAB_TEXT_SAMPLE_DISPLAY: return "Sample text";
+        case CONFIG_TAB_CHARACTER: return "Character";
+      }
     }
-
+    return txt;
   }
 }
 

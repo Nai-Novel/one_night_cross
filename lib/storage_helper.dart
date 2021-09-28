@@ -43,15 +43,12 @@ class StorageHelper{
       Directory(GAME_SAVE_THUMB_DIR).create(recursive: true);
     }
 
-    await Hive.openBox<String>(UserConfig.TABLE_USER_CONFIG);
+    await Hive.openBox<String>(UserConfig.TABLE_NAME);
     UserConfig._init();
     await Hive.openBox<String>(GlobalVariable.TABLE_NAME);
     if(UserConfig.get(UserConfig.GAME_ASSETS_FOLDER).length== 0){// && APP_DIRECTORY_ON_DEVICE.length== 1
       UserConfig.save(UserConfig.GAME_ASSETS_FOLDER, APP_DIRECTORY_ON_DEVICE[0].path);
     }
-    GameText.loadByLanguage(UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE)
-        ? UserConfig.get(UserConfig.GAME_MAIN_LANGUAGE) : UserConfig.get(UserConfig.GAME_SUB_LANGUAGE));
-    GameText.loadMenuByLanguage(UserConfig.get(UserConfig.MENU_LANGUAGE));
     await Hive.openBox<SavesInfo>(SavesInfo.TABLE_SAVE_TEMP);
     AlreadyReadHelper.init();
 
@@ -84,7 +81,7 @@ class GlobalVariable{
 }
 
 class UserConfig{
-  static const String TABLE_USER_CONFIG = "user_config";
+  static const String TABLE_NAME = "user_config";
 
   static const String GAME_INFO_JSON = "GAME_INFO_JSON";
   static const String COMMON_ONLINE_INFO_JSON = "COMMON_ONLINE_INFO_JSON";
@@ -112,7 +109,7 @@ class UserConfig{
   static const String ENABLE_LIP_SYNC = "ENABLE_LIP_SYNC";
 
   static void _init() async {
-    Box<String> userConfigBox= Hive.box<String>(TABLE_USER_CONFIG);
+    Box<String> userConfigBox= Hive.box<String>(TABLE_NAME);
     if(userConfigBox.isNotEmpty){return;}
     await userConfigBox.put(GAME_INFO_JSON, "");
     await userConfigBox.put(COMMON_ONLINE_INFO_JSON, "");
@@ -141,17 +138,17 @@ class UserConfig{
   }
 
   static Map<dynamic, String> allDataToMap(){
-    return Hive.box<String>(TABLE_USER_CONFIG).toMap();
+    return Hive.box<String>(TABLE_NAME).toMap();
   }
 
   static void save(String propertyName, String value){
-    Hive.box<String>(TABLE_USER_CONFIG).put(propertyName, value).whenComplete(() {
-      Hive.box<String>(TABLE_USER_CONFIG).compact();
+    Hive.box<String>(TABLE_NAME).put(propertyName, value).whenComplete(() {
+      Hive.box<String>(TABLE_NAME).compact();
     });
   }
 
   static String get(String propertyName){
-    String? ret= Hive.box<String>(TABLE_USER_CONFIG).get(propertyName);
+    String? ret= Hive.box<String>(TABLE_NAME).get(propertyName);
     return ret== null ? "" : ret;
   }
 
@@ -160,8 +157,8 @@ class UserConfig{
   }
 
   static void saveDouble(String propertyName, double? value){
-    Hive.box<String>(TABLE_USER_CONFIG).put(propertyName, value== null ? "" : value.toString()).whenComplete(() {
-      Hive.box<String>(TABLE_USER_CONFIG).compact();
+    Hive.box<String>(TABLE_NAME).put(propertyName, value== null ? "" : value.toString()).whenComplete(() {
+      Hive.box<String>(TABLE_NAME).compact();
     });
   }
   static double getDouble(String propertyName){
@@ -170,8 +167,8 @@ class UserConfig{
   }
 
   static void saveInt(String propertyName, int? value){
-    Hive.box<String>(TABLE_USER_CONFIG).put(propertyName, value== null ? "" : value.toString()).whenComplete(() {
-      Hive.box<String>(TABLE_USER_CONFIG).compact();
+    Hive.box<String>(TABLE_NAME).put(propertyName, value== null ? "" : value.toString()).whenComplete(() {
+      Hive.box<String>(TABLE_NAME).compact();
     });
   }
   static int getInt(String propertyName){
@@ -180,8 +177,8 @@ class UserConfig{
   }
 
   static void saveBool(String propertyName, bool? value){
-    Hive.box<String>(TABLE_USER_CONFIG).put(propertyName, value== null || !value ? "0" : "1").whenComplete(() {
-      Hive.box<String>(TABLE_USER_CONFIG).compact();
+    Hive.box<String>(TABLE_NAME).put(propertyName, value== null || !value ? "0" : "1").whenComplete(() {
+      Hive.box<String>(TABLE_NAME).compact();
     });
   }
   static bool getBool(String propertyName){
@@ -189,7 +186,7 @@ class UserConfig{
   }
 
   static ValueListenable getListener(String key){
-    return Hive.box<String>(TABLE_USER_CONFIG).listenable(keys: <String>[]..add(key));
+    return Hive.box<String>(TABLE_NAME).listenable(keys: <String>[]..add(key));
   }
 }
 

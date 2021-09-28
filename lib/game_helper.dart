@@ -45,7 +45,8 @@ void _doAppCommand(String? command, {bool? switchOn, String popUpText = ""}){
   switch(command){
     case MyAppCmd.BACK_TO_TITLE:
       if(_scriptRunner.isProcessingCommand() || _scriptRunner.isOnTitle()){
-        _doAppCommand(MyAppCmd.POP_UP, popUpText: GameText.WARNING_GAME_STILL_RUNNING);
+        _doAppCommand(MyAppCmd.POP_UP,
+            popUpText: GameText.get(GameText.WARNING_GAME_STILL_RUNNING));
       }else{
         AudioHelper.disposeAllAudio().whenComplete(() {
           _scriptRunner.setScript(ScriptItem(ScriptItem.TITLE_SCRIPT_NAME, null), true);
