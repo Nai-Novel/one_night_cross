@@ -882,22 +882,28 @@ class _ConfigWidgetState extends State<ConfigWidget> {
             GameText.CONFIG_TAB_TEXT_LANGUAGE,
             Row(
               children: [
-                Checkbox(
-                  value: UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE),
-                  onChanged: (value) {
-                    UserConfig.saveBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE, value!);
-                    setState(() {});
-                  },
+                Expanded(
+                  child: CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    value: UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE),
+                    onChanged: (value) {
+                      UserConfig.saveBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE, value!);
+                      setState(() {});
+                    },
+                    title: TextProcessor.simpleRichText("日本語"),
+                  ),
                 ),
-                TextProcessor.simpleRichText("日本語"),
-                Checkbox(
-                  value: UserConfig.getBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE),
-                  onChanged: (value) {
-                    UserConfig.saveBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE, value!);
-                    setState(() {});
-                  },
+                Expanded(
+                  child: CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    value: UserConfig.getBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE),
+                    onChanged: (value) {
+                      UserConfig.saveBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE, value!);
+                      setState(() {});
+                    },
+                    title: TextProcessor.simpleRichText("Tiếng Việt"),
+                  ),
                 ),
-                TextProcessor.simpleRichText("Tiếng Việt"),
               ],
             )
         ),

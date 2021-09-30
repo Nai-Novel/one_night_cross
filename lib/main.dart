@@ -41,6 +41,8 @@ class _SText{
   static const String RIGHT_SIDE_TITLE = "RIGHT_SIDE_TITLE";
 
   static const String COMMON_URL_NOT_FOUND = "COMMON_URL_NOT_FOUND";
+  static const String COMMON_END_GAME_TITLE = "COMMON_END_GAME_TITLE";
+  static const String COMMON_END_GAME_CONTENT = "COMMON_END_GAME_CONTENT";
 
   static String get(String txt) {
     String lang= UserConfig.get(UserConfig.MENU_LANGUAGE);
@@ -58,6 +60,8 @@ class _SText{
 
         case RIGHT_SIDE_TITLE: return "Cộng đồng";
         case COMMON_URL_NOT_FOUND: return "Không tìm thấy đường dẫn";
+        case COMMON_END_GAME_TITLE: return "Hoàn thành game";
+        case COMMON_END_GAME_CONTENT: return "Cảm ơn bạn đã chơi hết toàn bộ game ONE NIGHT CROSS. Với ý định nung nấu bấy lâu về việc đưa Visual Novel đến với các bạn độc giả được dễ dàng hơn, chúng mình rất cần sự ủng hộ từ những người yêu thích thể loại này. Một vài dòng nhận xét của các bạn là vô cùng quý giá với chúng mình. Bấm vào nút \"Khảo sát\" ở bên dưới bạn nhé.";
       }
     }
     else if (lang == Language.JAPANESE) {
@@ -74,6 +78,8 @@ class _SText{
 
         case RIGHT_SIDE_TITLE: return "コミュニティ";
         case COMMON_URL_NOT_FOUND: return "リンクが見つかりません";
+        case COMMON_END_GAME_TITLE: return "ゲームクリア";
+        case COMMON_END_GAME_CONTENT: return "ONE NIGHT CROSSをプレイしていただき、どうもありがとうございます。ビジュアルノベルをより簡単に読者に届けるという熱烈な意図を持って、私たちにとってこのジャンルに興味のある人々からのサポートが本当に必要です。 あなたのコメントの数行は私たちにとって非常に貴重です。 下の「アンケート」ボタンをクリックして頂いたら嬉しいです。";
       }
     }
     return "";
@@ -100,6 +106,34 @@ class _InitWidgetState extends State<InitWidget> {
         _isGameResourceReady= result;
       });
     });
+  }
+
+  void _checkIsFinishAllEnding(){
+    SavesInfo fakeSave= SavesInfo.loadCurrentData();
+    if(fakeSave.checkVariable(ScriptCommandInfo(
+        "check; exp=null != ed1 && null != ed2"))){
+      // set up the button
+      Widget okButton = TextButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(_SText.get(_SText.COMMON_END_GAME_TITLE)),
+            content: Text(_SText.get(_SText.COMMON_END_GAME_CONTENT)),
+            actions: [
+              okButton,
+            ],
+          );
+        },
+      );
+    }
   }
 
   final TextStyle _defaultTextStyle = TextStyle(
@@ -291,6 +325,7 @@ class _InitWidgetState extends State<InitWidget> {
                               )),
                             ).whenComplete(() {
                               _checkResourceInternal();
+                              _checkIsFinishAllEnding();
                             });
                           },
                           style: _normalBtnStyle,
@@ -306,6 +341,7 @@ class _InitWidgetState extends State<InitWidget> {
                               )),
                             ).whenComplete(() {
                               _checkResourceInternal();
+                              _checkIsFinishAllEnding();
                             });
                           },
                           style: SavesInfo.haveCurrentData()
