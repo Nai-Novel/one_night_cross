@@ -14,6 +14,25 @@ import 'text_processor.dart';
 
 class GameResource extends StatelessWidget {
   const GameResource({Key? key}) : super(key: key);
+  static const String RESOURCE_JSON_KEY= "resource_info_v1";
+  static const int APP_VERSION= 1;
+
+  static Future<String?> checkVersion(){
+    Completer<String?> completer = new Completer<String?>();
+    dynamic gameInfoJsonObj= HttpHelper.queryGameInfo();
+    if(null== gameInfoJsonObj){
+      completer.complete(null);
+      return completer.future;
+    }
+    dynamic versionObject= gameInfoJsonObj['change_logs'];
+    int versionCode= versionObject['version_code'] as int;
+    if(versionCode== APP_VERSION){
+      completer.complete(null);
+    }else{
+      completer.complete(versionObject['message'] as String);
+    }
+    return completer.future;
+  }
 
   static Future<bool> checkResource(){
     Completer<bool> completer = new Completer<bool>();
@@ -23,7 +42,7 @@ class GameResource extends StatelessWidget {
       return completer.future;
     }
     List<dynamic> checkInfoListObject= gameInfoJsonObj
-        ['resource_info']['credit_check_file'] as List<dynamic>;
+        [RESOURCE_JSON_KEY]['credit_check_file'] as List<dynamic>;
     int validFileCount= 0;
     int checkedFileCount= 0;
     for(dynamic toCheckObj in checkInfoListObject){
@@ -37,6 +56,15 @@ class GameResource extends StatelessWidget {
         if(result){validFileCount++;}
         if(checkedFileCount>= checkInfoListObject.length){
           completer.complete(validFileCount== checkedFileCount);
+
+          //Auto download mini update file
+          List<dynamic> listMiniFile = gameInfoJsonObj
+              [RESOURCE_JSON_KEY]['auto_update_files'] as List<dynamic>;
+          List<MDownloadInfo> ret= listMiniFile.map((jsonString) =>
+              MDownloadInfo.fromJson(jsonString)).toList();
+          for(MDownloadInfo oneDownloadInfo in ret){
+            oneDownloadInfo.download();
+          }
         }
       });
     }
@@ -158,6 +186,7 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
     Completer<void> completer= Completer<void>();
     String gameResourceDir = AssetConstant.getTruePath(AssetConstant.ROOT_DIR);
     Directory(gameResourceDir).list(recursive: false).forEach((file) {
+      if(Directory(file.path).existsSync()){return;}
       String fileName= Path.basename(file.path);
       fileName= Convert.utf8.decode(Convert.base64Decode(fileName));
       String newFileNameStr= fileName.replaceAll("(=)", Platform.pathSeparator);
@@ -342,6 +371,8 @@ class _GameResourceProgressState extends State<GameResourceProgress> {
                                 _SText.DOWNLOAD_DATA_REQUEST_FAILED);
                           }else{
                             _listDownloadInfo= downloadList;
+                            String gameResourceDir = AssetConstant.getTruePath(AssetConstant.ROOT_DIR);
+                            Directory(gameResourceDir).deleteSync(recursive: true);
                             _listDownloadInfo![0].download(_progressNotifier);
                           }
                         });
@@ -376,7 +407,7 @@ class GRDownloadInfo{
         return;
       }
       List<dynamic> listJson = gameInfoJsonObj
-          ['resource_info']['download_links'] as List<dynamic>;
+          [GameResource.RESOURCE_JSON_KEY]['download_links'] as List<dynamic>;
       List<GRDownloadInfo> ret= listJson.map((jsonString) =>
           GRDownloadInfo.fromJson(jsonString)).toList();
       completer.complete(ret);
@@ -451,5 +482,73 @@ class GRDownloadInfo{
     } catch (e) {
       print(e);
     }
+  }
+}
+
+//MiniFileAutoUpdateDownloadInfo
+class MDownloadInfo{
+  String _filePath= "";
+  String _url= "";
+  String _hashMd5= "";
+
+  static Future<List<MDownloadInfo>> getDownloadFileList(){
+    Completer<List<MDownloadInfo>> completer= Completer<List<MDownloadInfo>>();
+    HttpHelper.getCommonOnlineInfo();
+    HttpHelper.getGameInfoJson().then((gameInfoJson) {
+      dynamic gameInfoJsonObj= HttpHelper.queryGameInfo();
+      if(null== gameInfoJsonObj){
+        completer.complete(<MDownloadInfo>[]);
+        return;
+      }
+      List<dynamic> listJson = gameInfoJsonObj
+          [GameResource.RESOURCE_JSON_KEY]['auto_update_files'] as List<dynamic>;
+      List<MDownloadInfo> ret= listJson.map((jsonString) =>
+          MDownloadInfo.fromJson(jsonString)).toList();
+      completer.complete(ret);
+    });
+    return completer.future;
+  }
+
+  MDownloadInfo(String filePath, String url, String hashMd5){
+    _filePath= filePath;
+    _url= url;
+    _hashMd5= hashMd5;
+  }
+
+  factory MDownloadInfo.fromJson(dynamic json) {
+    return MDownloadInfo(
+        json['path'] as String,
+        json['url'] as String,
+        json['hash_md5'] as String
+    );
+  }
+
+  Future<bool> download(){
+    Completer<bool> completer= Completer<bool>();
+    String filePath= Path.join(
+        UserConfig.get(UserConfig.GAME_ASSETS_FOLDER), AssetConstant.ROOT_DIR, _filePath);
+    CommonFunc.checkMd5File(filePath,
+        _hashMd5.substring(0, 16), _hashMd5.substring(16)).then((checkResult) {
+      if(checkResult) {return;}
+
+      if(File(filePath+ ".downloading").existsSync()){
+        File(filePath+ ".downloading").deleteSync();
+      }
+      Dio().download(_url, filePath+ ".downloading").then((response) {
+        if(response.statusCode== 200){
+          File oldFile= File(filePath);
+          oldFile.exists().then((isExist) {
+            if(isExist){
+              File(filePath).deleteSync();
+            }
+            File(filePath+ ".downloading").rename(filePath);
+            completer.complete(true);
+          });
+        }else{
+          completer.complete(false);
+        }
+      });
+    });
+    return completer.future;
   }
 }

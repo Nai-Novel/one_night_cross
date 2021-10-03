@@ -15,14 +15,15 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   //Initialize StorageHelper
   StorageHelper.init().whenComplete(() {
-    HttpHelper.getGameInfoJson();
     HttpHelper.getCommonOnlineInfo();
-    //Set game orientation then run App
-    //TODO: Set native device orientation if need
-    SystemChrome.setPreferredOrientations(GameConstant.GAME_ORIENTATION)
-        .whenComplete(() => runApp(MaterialApp(
-      home: SafeArea(child: InitWidget(),),)),
-    );
+    HttpHelper.getGameInfoJson().whenComplete(() {
+      //Set game orientation then run App
+      //TODO: Set native device orientation if need
+      SystemChrome.setPreferredOrientations(GameConstant.GAME_ORIENTATION)
+          .whenComplete(() => runApp(MaterialApp(
+        home: SafeArea(child: InitWidget(),),)),
+      );
+    });
   });
 }
 
@@ -43,6 +44,7 @@ class _SText{
   static const String COMMON_URL_NOT_FOUND = "COMMON_URL_NOT_FOUND";
   static const String COMMON_END_GAME_TITLE = "COMMON_END_GAME_TITLE";
   static const String COMMON_END_GAME_CONTENT = "COMMON_END_GAME_CONTENT";
+  static const String COMMON_NEW_VERSION_READY = "COMMON_NEW_VERSION_READY";
 
   static String get(String txt) {
     String lang= UserConfig.get(UserConfig.MENU_LANGUAGE);
@@ -61,7 +63,12 @@ class _SText{
         case RIGHT_SIDE_TITLE: return "Cộng đồng";
         case COMMON_URL_NOT_FOUND: return "Không tìm thấy đường dẫn";
         case COMMON_END_GAME_TITLE: return "Hoàn thành game";
-        case COMMON_END_GAME_CONTENT: return "Cảm ơn bạn đã chơi hết toàn bộ game ONE NIGHT CROSS. Với ý định nung nấu bấy lâu về việc đưa Visual Novel đến với các bạn độc giả được dễ dàng hơn, chúng mình rất cần sự ủng hộ từ những người yêu thích thể loại này. Một vài dòng nhận xét của các bạn là vô cùng quý giá với chúng mình. Bấm vào nút \"Khảo sát\" ở bên dưới bạn nhé.";
+        case COMMON_END_GAME_CONTENT: return "Cảm ơn bạn đã chơi hết toàn bộ game ONE NIGHT CROSS."
+            " Với ý định nung nấu bấy lâu về việc đưa Visual Novel đến với các bạn độc giả được dễ dàng hơn,"
+            " chúng mình rất cần sự ủng hộ từ những người yêu thích thể loại này."
+            " Một vài dòng nhận xét của các bạn là vô cùng quý giá với chúng mình."
+            " Bấm vào nút \"Khảo sát\" ở bên dưới bạn nhé.";
+        case COMMON_NEW_VERSION_READY: return "Có bản cập nhật mới";
       }
     }
     else if (lang == Language.JAPANESE) {
@@ -79,7 +86,12 @@ class _SText{
         case RIGHT_SIDE_TITLE: return "コミュニティ";
         case COMMON_URL_NOT_FOUND: return "リンクが見つかりません";
         case COMMON_END_GAME_TITLE: return "ゲームクリア";
-        case COMMON_END_GAME_CONTENT: return "ONE NIGHT CROSSをプレイしていただき、どうもありがとうございます。ビジュアルノベルをより簡単に読者に届けるという熱烈な意図を持って、私たちにとってこのジャンルに興味のある人々からのサポートが本当に必要です。 あなたのコメントの数行は私たちにとって非常に貴重です。 下の「アンケート」ボタンをクリックして頂いたら嬉しいです。";
+        case COMMON_END_GAME_CONTENT: return "ONE NIGHT CROSSをプレーしていただき、"
+            "どうもありがとうございます。ビジュアルノベルをより簡単に読者に届けるという熱烈な意図を持って、"
+            "私たちにとってこのジャンルに興味のある人々からのアドバイスが本当に必要です。 "
+            "あなたのコメントは私たちにとって非常に貴重です。 "
+            "下の「アンケート」ボタンをクリックして入力してください。";
+        case COMMON_NEW_VERSION_READY: return "新しいバージョンがあります。";
       }
     }
     return "";
@@ -104,6 +116,33 @@ class _InitWidgetState extends State<InitWidget> {
     GameResource.checkResource().then((result) {
       setState(() {
         _isGameResourceReady= result;
+      });
+      GameResource.checkVersion().then((message) {
+        if(null!= message){
+          // set up the button
+          Widget okButton = TextButton(
+            child: Text("OK"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          );
+
+          // show the dialog
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(_SText.get(_SText.COMMON_NEW_VERSION_READY)),
+                content: SingleChildScrollView(
+                  child: Text(message.replaceAll(TextProcessor.FULL_TAG_LINE_BREAK, "\n")),
+                ),
+                actions: [
+                  okButton,
+                ],
+              );
+            },
+          );
+        }
       });
     });
   }
@@ -352,10 +391,15 @@ class _InitWidgetState extends State<InitWidget> {
                         ),
                       ],),
                       Row(children: [
-                        SizedBox(width: 5,),
-                        ElevatedButton(
+                        if(_isGameResourceReady) SizedBox(width: 5,),
+                        if(_isGameResourceReady) ElevatedButton(
                           onPressed: (){
-
+                            Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => MyApp(
+                                file: ScriptItem.GUIDE_SCRIPT_NAME,
+                                command: StartAppCommand.RUN_SCRIPT,
+                              )),
+                            );
                           },
                           style: _normalBtnStyle.copyWith(
                               backgroundColor: MaterialStateProperty.all(Colors.blueAccent)),

@@ -56,10 +56,8 @@ flutter:
     - assets/app/text/
     - assets/app/image/
     - assets/app/image/gif/
-    - assets/app/image/guide/
     - assets/app/image/community/
     - assets/app/image/stage_splash/
-    - assets/app/image/helpus/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

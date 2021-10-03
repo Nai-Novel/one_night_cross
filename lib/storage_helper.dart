@@ -460,6 +460,7 @@ class SavesInfo extends HiveObject{
     };
     _currentParameterSave.forEach(parseVariableValue);
     GlobalVariable.allDataToMap().forEach(parseVariableValue);
+    UserConfig.allDataToMap().forEach(parseVariableValue);
     return context;
   }
   void saveVariable(ScriptCommandInfo commandInfo) {
@@ -720,8 +721,6 @@ class AssetConstant {
   static const String APP_TEXT_BOX_ARROW_UP_GIF = APP_GIF_DIR + "game_text_box_arrow_up_animate.gif";
   static const String APP_TEXT_BOX_ARROW_UP = APP_IMAGE_DIR + "game_text_box_arrow_up.png";
   static const String APP_TEXT_DIR = APP_ROOT_DIR + "text/";
-
-  static const String CHECK_HASH_FILE_PATH = IMAGE_DIR+ "hoshi";
 
   static SplayTreeMap<String, String> _magicPath= SplayTreeMap<String, String>();
 

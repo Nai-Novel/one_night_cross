@@ -550,7 +550,7 @@ class _ChoiceHelperState extends State<ChoiceHelper> {
       SchedulerBinding.instance!.addPostFrameCallback((_) {
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
         _scrollController.animateTo(0,
-          duration: const Duration(milliseconds: 700),
+          duration: Duration(milliseconds: _listCommand.length * 250),
           curve: Curves.easeOut,
         );
       });
@@ -1072,7 +1072,7 @@ class _ConfigWidgetState extends State<ConfigWidget> {
             flex: 1,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 4,
+              itemCount: 3,
               itemBuilder: (BuildContext context, int index) {
                 String tabName= GameText.CONFIG_TAB_GENERAL;
                 if(index== 0){

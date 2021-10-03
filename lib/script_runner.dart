@@ -1032,7 +1032,7 @@ class ScriptItem{
   static const String FAKE_SCRIPT_NAME_PREFIX= "_";
   static const String SPLASH_SCRIPT_NAME= FAKE_SCRIPT_NAME_PREFIX+ "splash";
   static const String TITLE_SCRIPT_NAME= FAKE_SCRIPT_NAME_PREFIX+ "title";
-  static const String MAIN_SCRIPT_NAME= "main_menu_test";
+  static const String GUIDE_SCRIPT_NAME= FAKE_SCRIPT_NAME_PREFIX+ "guide";
 
   late String _name;
   int line= 0;

@@ -1,4 +1,5 @@
 assets/.nomedia/game/image/black|=|assets/.nomedia/game/image/black;w=1280;h=720.png
+assets/.nomedia/game/image/finger|=|assets/.nomedia/game/image/finger;w=340;h=340.png
 assets/.nomedia/game/image/pendant|=|assets/.nomedia/game/image/pendant;w=867;h=611.png
 assets/.nomedia/game/image/textbox_bg|=|assets/.nomedia/game/image/textbox_bg;w=1280;h=149.png
 assets/.nomedia/game/image/bg/black|=|assets/.nomedia/game/image/bg/black;w=1280;h=720.png
@@ -72,6 +73,7 @@ assets/.nomedia/game/scripts/scene1|=|assets/.nomedia/game/scripts/scene1.txt
 assets/.nomedia/game/scripts/scene2|=|assets/.nomedia/game/scripts/scene2.txt
 assets/.nomedia/game/scripts/scene3|=|assets/.nomedia/game/scripts/scene3.txt
 assets/.nomedia/game/scripts/scene4|=|assets/.nomedia/game/scripts/scene4.txt
+assets/.nomedia/game/scripts/_guide|=|assets/.nomedia/game/scripts/_guide.txt
 assets/.nomedia/game/scripts/_splash|=|assets/.nomedia/game/scripts/_splash.txt
 assets/.nomedia/game/scripts/_title|=|assets/.nomedia/game/scripts/_title.txt
 assets/.nomedia/game/sound/bg/bach_syuyo_spiano|=|assets/.nomedia/game/sound/bg/bach_syuyo_spiano;t=255110.ogg
