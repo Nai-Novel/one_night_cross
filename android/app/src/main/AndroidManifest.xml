@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
-        android:label="one_night_cross"
+        android:label="One Night Cross(Visual novel)[VinaHoshi]"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"

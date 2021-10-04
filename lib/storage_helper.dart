@@ -125,7 +125,7 @@ class UserConfig{
     await userConfigBox.put(IS_ACTIVE_SUB_LANGUAGE, (1).toString());
     await userConfigBox.put(GAME_MAIN_LANGUAGE, Language.JAPANESE);
     await userConfigBox.put(GAME_SUB_LANGUAGE, Language.VIETNAMESE);
-    await userConfigBox.put(ONE_CHARACTER_DISPLAY_TIME, (45).toString());
+    await userConfigBox.put(ONE_CHARACTER_DISPLAY_TIME, (60).toString());
     await userConfigBox.put(TEXT_SIZE, (20).toString());
     await userConfigBox.put(TEXT_USER_FONT, "");
     await userConfigBox.put(AUTO_END_WAIT_TIME, (1500).toString());

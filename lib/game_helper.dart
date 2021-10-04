@@ -70,7 +70,7 @@ void _doAppCommand(String? command, {bool? switchOn, String popUpText = ""}){
       (_gameMenuKey.currentState as _MenuContainerState).displayMenu(GameText.MENU_CONFIG);
       break;
     case MyAppCmd.HIDE_TEXT_BOX:
-      (_textContainerKey.currentState as _TextContainerState).hideTextBox(true);
+      (_textContainerKey.currentState as _TextContainerState).displayTextBox(true);
       break;
     case MyAppCmd.OPEN_SAVE_LOAD:
       (_gameMenuKey.currentState as _MenuContainerState).displayMenu(GameText.MENU_SAVE_AND_LOAD);

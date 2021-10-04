@@ -83,6 +83,7 @@ class MyApp extends StatelessWidget {
       }
     });
 
+    //TODO: update deprecate
     SystemChrome.setEnabledSystemUIOverlays([]);
     return Stack(
       fit: StackFit.expand,
@@ -2455,7 +2456,7 @@ class _TextContainerState extends State<TextContainer>
                       },
                       onLongPressStart: (details){
                         if(_tempHideTextBox){
-                          hideTextBox(false);
+                          displayTextBox(false);
                         }
                         _doAppCommand(MyAppCmd.SWITCH_SKIP_ALL, switchOn: true);
                       },
@@ -2557,22 +2558,14 @@ class _TextContainerState extends State<TextContainer>
                       ValueListenableBuilder(
                         valueListenable: _displayTextNotifier,
                         builder: (context, displayIndex, child){
-                          return GestureDetector(//disable onTap when display clickable content to prevent tap override
+                          return GestureDetector(
+                            //disable onTap when display clickable content to prevent tap override
                             onTap: displayIndex== 3 ? null: () {
                               if(_tempHideTextBox){
-                                hideTextBox(false);
+                                displayTextBox(false);
                               }else{
                                 _doAppCommand(MyAppCmd.USER_RUN_SCRIPT);
                               }
-                            },
-                            onLongPressStart: (details){
-                              if(_tempHideTextBox){
-                                hideTextBox(false);
-                              }
-                              _doAppCommand(MyAppCmd.SWITCH_SKIP_ALL, switchOn: true);
-                            },
-                            onLongPressEnd: (details){
-                              _doAppCommand(MyAppCmd.SWITCH_SKIP_ALL, switchOn: false);
                             },
                             onPanStart: (details){
                               _textMenu= GameTextMenu(boundSize: _displayRichTextBoundKey.currentContext!.size!);
@@ -3189,14 +3182,14 @@ class _TextContainerState extends State<TextContainer>
         GestureDetector(
           onTap: () {
             if(_tempHideTextBox){
-              hideTextBox(false);
+              displayTextBox(false);
             }else{
               _doAppCommand(MyAppCmd.USER_RUN_SCRIPT);
             }
           },
           onLongPressStart: (details){
             if(_tempHideTextBox){
-              hideTextBox(false);
+              displayTextBox(false);
             }
             _doAppCommand(MyAppCmd.SWITCH_SKIP_ALL, switchOn: true);
           },
@@ -3206,7 +3199,7 @@ class _TextContainerState extends State<TextContainer>
           onPanStart: (dragDetail){
             //Size boundSize= _textContainerKey.currentContext.size;
             if(_tempHideTextBox){
-              hideTextBox(false);
+              displayTextBox(false);
             }
             _quickMenu.show();
           },
@@ -3228,7 +3221,7 @@ class _TextContainerState extends State<TextContainer>
   Widget _textMenu= Container();
 
   bool _tempHideTextBox= false;
-  void hideTextBox(bool isHide){
+  void displayTextBox(bool isHide){
     setState(() {
       _tempHideTextBox= isHide;
     });
