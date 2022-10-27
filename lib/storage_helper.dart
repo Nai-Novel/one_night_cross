@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:expressions/expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/services.dart';
 import 'com_cons.dart';
@@ -75,6 +74,35 @@ class GlobalVariable{
     return Hive.box<String>(TABLE_NAME).get(propertyName);
   }
 
+  static void saveDouble(String propertyName, double? value){
+    Hive.box<String>(TABLE_NAME).put(propertyName, value== null ? "" : value.toString()).whenComplete(() {
+      Hive.box<String>(TABLE_NAME).compact();
+    });
+  }
+  static double? getDouble(String propertyName){
+    String? value= get(propertyName);
+    return value== null ? null : (value.length== 0 ? 0 : double.tryParse(value)!);
+  }
+
+  static void saveInt(String propertyName, int? value){
+    Hive.box<String>(TABLE_NAME).put(propertyName, value== null ? "" : value.toString()).whenComplete(() {
+      Hive.box<String>(TABLE_NAME).compact();
+    });
+  }
+  static int? getInt(String propertyName){
+    String? value= get(propertyName);
+    return value== null ? null : (value.length== 0 ? 0 : int.tryParse(value)!);
+  }
+
+  static void saveBool(String propertyName, bool? value){
+    Hive.box<String>(TABLE_NAME).put(propertyName, value== null || !value ? "0" : "1").whenComplete(() {
+      Hive.box<String>(TABLE_NAME).compact();
+    });
+  }
+  static bool getBool(String propertyName){
+    return "1"== get(propertyName);
+  }
+
   static Map<dynamic, String> allDataToMap(){
     return Hive.box<String>(TABLE_NAME).toMap();
   }
@@ -83,6 +111,7 @@ class GlobalVariable{
 class UserConfig{
   static const String TABLE_NAME = "user_config";
 
+  static const String APP_OPEN_TIME_COUNT = "APP_OPEN_TIME_COUNT";
   static const String GAME_INFO_JSON = "GAME_INFO_JSON";
   static const String COMMON_ONLINE_INFO_JSON = "COMMON_ONLINE_INFO_JSON";
   static const String GAME_ASSETS_FOLDER = "GAME_ASSETS_FOLDER";
@@ -111,6 +140,7 @@ class UserConfig{
   static void _init() async {
     Box<String> userConfigBox= Hive.box<String>(TABLE_NAME);
     if(userConfigBox.isNotEmpty){return;}
+    await userConfigBox.put(APP_OPEN_TIME_COUNT, (0).toString());
     await userConfigBox.put(GAME_INFO_JSON, "");
     await userConfigBox.put(COMMON_ONLINE_INFO_JSON, "");
     await userConfigBox.put(GAME_ASSETS_FOLDER, "");
@@ -121,10 +151,10 @@ class UserConfig{
     await userConfigBox.put(GAME_VOLUME_SE, (1).toString());
     await userConfigBox.put(GAME_VOLUME_VOICE_COMMON, (1).toString());
     await userConfigBox.put(MENU_LANGUAGE, Language.VIETNAMESE);
-    await userConfigBox.put(IS_ACTIVE_MAIN_LANGUAGE, (0).toString());
-    await userConfigBox.put(IS_ACTIVE_SUB_LANGUAGE, (1).toString());
-    await userConfigBox.put(GAME_MAIN_LANGUAGE, Language.JAPANESE);
-    await userConfigBox.put(GAME_SUB_LANGUAGE, Language.VIETNAMESE);
+    await userConfigBox.put(IS_ACTIVE_MAIN_LANGUAGE, (1).toString());
+    await userConfigBox.put(IS_ACTIVE_SUB_LANGUAGE, (0).toString());
+    await userConfigBox.put(GAME_MAIN_LANGUAGE, Language.VIETNAMESE);
+    await userConfigBox.put(GAME_SUB_LANGUAGE, Language.JAPANESE);
     await userConfigBox.put(ONE_CHARACTER_DISPLAY_TIME, (60).toString());
     await userConfigBox.put(TEXT_SIZE, (20).toString());
     await userConfigBox.put(TEXT_USER_FONT, "");
@@ -435,7 +465,7 @@ class SavesInfo extends HiveObject{
     return ret== null ? "" : ret;
   }
 
-  Map<String, dynamic> initExpressionContext(){
+  static Map<String, dynamic> initExpressionContext(){
     int Function(String?) length= (toGetLengthStr){
       return null== toGetLengthStr ? -1 : toGetLengthStr.length;
     };
@@ -458,7 +488,6 @@ class SavesInfo extends HiveObject{
         context.putIfAbsent(key, () => value);
       }
     };
-    _currentParameterSave.forEach(parseVariableValue);
     GlobalVariable.allDataToMap().forEach(parseVariableValue);
     UserConfig.allDataToMap().forEach(parseVariableValue);
     return context;
@@ -497,6 +526,25 @@ class SavesInfo extends HiveObject{
   }
 
   bool checkVariable(ScriptCommandInfo commandInfo) {
+    String expressionString= commandInfo.valueOf(ScriptCommand.CHECK_EXPRESSION)!;
+    Map<String, dynamic> context= initExpressionContext();
+    Function(dynamic, String) parseVariableValue= (key,value) {
+      double? tryParseNumber= double.tryParse(value);
+      //Treat as string if fail on trying parse to number
+      if(null!= tryParseNumber){
+        context.putIfAbsent(key, () => tryParseNumber);
+      }else{
+        context.putIfAbsent(key, () => value);
+      }
+    };
+    _currentParameterSave.forEach(parseVariableValue);
+    final evaluator = const ExpressionEvaluator();
+
+    bool result= evaluator.eval(Expression.parse(expressionString), context) as bool;
+    return result;
+  }
+
+  static bool globalCheckVariable(ScriptCommandInfo commandInfo){
     String expressionString= commandInfo.valueOf(ScriptCommand.CHECK_EXPRESSION)!;
     Map<String, dynamic> context= initExpressionContext();
     final evaluator = const ExpressionEvaluator();

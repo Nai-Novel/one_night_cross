@@ -44,6 +44,7 @@ class _SText{
   static const String COMMON_URL_NOT_FOUND = "COMMON_URL_NOT_FOUND";
   static const String COMMON_END_GAME_TITLE = "COMMON_END_GAME_TITLE";
   static const String COMMON_END_GAME_CONTENT = "COMMON_END_GAME_CONTENT";
+  static const String COMMON_NOT_END_GAME_WARNING = "COMMON_NOT_END_GAME_WARNING";
   static const String COMMON_NEW_VERSION_READY = "COMMON_NEW_VERSION_READY";
 
   static String get(String txt) {
@@ -68,6 +69,7 @@ class _SText{
             " chúng mình rất cần sự ủng hộ từ những người yêu thích thể loại này."
             " Một vài dòng nhận xét của các bạn là vô cùng quý giá với chúng mình."
             " Bấm vào nút \"Khảo sát\" ở bên dưới bạn nhé.";
+        case COMMON_NOT_END_GAME_WARNING: return "Bạn hãy hoàn thành 2 end của game trước đã nhé.";
         case COMMON_NEW_VERSION_READY: return "Có bản cập nhật mới";
       }
     }
@@ -91,6 +93,7 @@ class _SText{
             "私たちにとってこのジャンルに興味のある人々からのアドバイスが本当に必要です。 "
             "あなたのコメントは私たちにとって非常に貴重です。 "
             "下の「アンケート」ボタンをクリックして入力してください。";
+        case COMMON_NOT_END_GAME_WARNING: return "まずはゲームの二つのエンディングを完了してください。 ";
         case COMMON_NEW_VERSION_READY: return "新しいバージョンがあります。";
       }
     }
@@ -148,8 +151,7 @@ class _InitWidgetState extends State<InitWidget> {
   }
 
   void _checkIsFinishAllEnding(){
-    SavesInfo fakeSave= SavesInfo.loadCurrentData();
-    if(fakeSave.checkVariable(ScriptCommandInfo(
+    if(SavesInfo.globalCheckVariable(ScriptCommandInfo(
         "check; exp=null != ed1 && null != ed2"))){
       // set up the button
       Widget okButton = TextButton(
@@ -255,11 +257,41 @@ class _InitWidgetState extends State<InitWidget> {
 
   @override
   Widget build(BuildContext context) {
+    return Column(children: [
+      Row(children: [
+        ToggleButtons(
+          children: <Widget>[
+            Icon(Icons.ac_unit),
+          ],
+          onPressed: (int index) {
+            setState(() {
+              UserConfig.saveBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE,
+                  !UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE));
+            });
+          },
+          isSelected: <bool>[UserConfig.getBool(UserConfig.IS_ACTIVE_MAIN_LANGUAGE)],
+        ),
+        ToggleButtons(
+          children: <Widget>[
+            Icon(Icons.mail),
+          ],
+          onPressed: (int index) {
+            setState(() {
+              UserConfig.saveBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE,
+                  !UserConfig.getBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE));
+            });
+          },
+          isSelected: <bool>[UserConfig.getBool(UserConfig.IS_ACTIVE_SUB_LANGUAGE)],
+        ),
+      ],),
+      Expanded(child: Container()),
+    ],);
     ButtonStyle _normalBtnStyle= ElevatedButton.styleFrom(
       padding: EdgeInsets.all(5),
       primary: Colors.redAccent,
       textStyle: _defaultTextStyle,
     );
+    /*
     return Scaffold(
       body: Row(children: [
         Expanded(flex: 2, child: Card(
@@ -423,6 +455,31 @@ class _InitWidgetState extends State<InitWidget> {
                         SizedBox(width: 5,),
                         ElevatedButton(
                           onPressed: (){
+                            SavesInfo fakeSave= SavesInfo.loadCurrentData();
+                            if(!fakeSave.checkVariable(ScriptCommandInfo(
+                                "check; exp=null != ed1 && null != ed2"))){
+                              Widget okButton = TextButton(
+                                child: Text("OK"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              );
+
+                              // show the dialog
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext inContext) {
+                                  return AlertDialog(
+                                    title: Text(_SText.get(_SText.COMMON_END_GAME_TITLE)),
+                                    content: Text(_SText.get(_SText.COMMON_NOT_END_GAME_WARNING)),
+                                    actions: [
+                                      okButton,
+                                    ],
+                                  );
+                                },
+                              );
+                              return;
+                            }
                             dynamic gameInfoJsonObj= HttpHelper.queryGameInfo();
                             if(null== gameInfoJsonObj){
                               final snackBar = SnackBar(content: Text(_SText.get(_SText.COMMON_URL_NOT_FOUND)));
@@ -476,6 +533,7 @@ class _InitWidgetState extends State<InitWidget> {
         )),
       ],),
     );
+    */
   }
 
   @override

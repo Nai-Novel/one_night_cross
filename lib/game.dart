@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
     });
 
     //TODO: update deprecate
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
     return Stack(
       fit: StackFit.expand,
       children: [
